@@ -1,0 +1,10 @@
+{
+    "editor.rulers": [150],
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+
+    "python.pythonPath": "/home/dneumann/miniconda3/envs/lottery-ticket-hypothesis/bin/python",
+    "python.linting.pylintArgs": [
+        "--max-line-length", "150"
+    ]
+}

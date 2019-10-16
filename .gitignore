@@ -1,0 +1,3 @@
+
+# Ignores the compiled Python files
+__pycache__
