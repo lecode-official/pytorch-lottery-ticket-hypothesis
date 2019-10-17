@@ -39,3 +39,39 @@ class Cifar10:
         # Loads the test split of the dataset
         dataset_test_split = torchvision.datasets.CIFAR10(root=self.path, train=False, download=True, transform=transform)
         self.test_split = torch.utils.data.DataLoader(dataset_test_split, batch_size=self.batch_size, shuffle=False, num_workers=10)
+
+    def get_input_size(self):
+        """
+        Retrieves the input size of the samples of the dataset.
+
+        Returns
+        -------
+            tuple
+                Returns a tuple containing the dimensions of the dataset samples on the x and y-axis.
+        """
+
+        return 32, 32
+
+    def get_number_of_channels(self):
+        """
+        Retrieves the number of channels of the samples of the dataset.
+
+        Returns
+        -------
+            int
+                Returns the number of channels that the samples of the dataset have.
+        """
+
+        return 3
+
+    def get_number_of_classes(self):
+        """
+        Retrives the number of classes that the dataset has.
+
+        Returns
+        -------
+            int
+                Returns the number of classes of the dataset.
+        """
+
+        return 10

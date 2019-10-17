@@ -8,10 +8,11 @@ import logging
 import datetime
 import argparse
 
-from .models.lenet import LeNet_300_100
 from .datasets.mnist import Mnist
+from .datasets.cifar import Cifar10
 from .training.trainer import Trainer
 from .training.evaluator import Evaluator
+from .models.lenet import LeNet_300_100, LeNet5
 
 class Application:
     """Represents the lottery ticket hypothesis application."""
@@ -19,7 +20,10 @@ class Application:
     def __init__(self):
         """Initializes a new Application instance."""
 
+        self.logger = None
         self.command = None
+        self.model = None
+        self.dataset = None
         self.dataset_path = None
         self.number_of_epochs = None
         self.batch_size = None
@@ -41,15 +45,38 @@ class Application:
         """Trains the LeNet5 model on the MNIST dataset."""
 
         # Loads the training and the test split of the MNIST dataset
-        dataset = Mnist(self.dataset_path, self.batch_size)
+        if self.dataset == 'mnist':
+            dataset = Mnist(self.dataset_path, self.batch_size)
+        elif self.dataset == 'cifar10':
+            dataset = Cifar10(self.dataset_path, self.batch_size)
+        else:
+            raise ValueError('Unknown dataset: {0}.'.format(self.dataset))
 
-        # Loads the LeNet5 model and trains it
-        lenet5 = LeNet_300_100()
-        trainer = Trainer(lenet5, dataset)
+        # Creates the model
+        if self.model == 'lenet5':
+            model = LeNet5(dataset.get_input_size(), dataset.get_number_of_channels(), dataset.get_number_of_classes())
+        elif self.model == 'lenet-300-100':
+            model = LeNet_300_100(dataset.get_input_size(), dataset.get_number_of_channels(), dataset.get_number_of_classes())
+        else:
+            raise ValueError('Unknown model: {0}.'.format(self.dataset))
+
+        # Logs out the model and dataset that is being trained on
+        model_map = {
+            'lenet-300-100': 'LeNet-300-100',
+            'lenet5': 'LeNet5'
+        }
+        dataset_map = {
+            'mnist': 'MNIST',
+            'cifar10': 'Cifar10'
+        }
+        self.logger.info('Training %s on %s.', model_map[self.model], dataset_map[self.dataset])
+
+        # Trains the model on the training split of the dataset
+        trainer = Trainer(model, dataset)
         trainer.train(self.learning_rate, self.number_of_epochs)
 
         # Evaluates the model on the test split of the dataset
-        evaluator = Evaluator(lenet5, dataset)
+        evaluator = Evaluator(model, dataset)
         evaluator.evaluate()
 
     def parse_command_line_arguments(self):
@@ -112,13 +139,15 @@ class Application:
         arguments = argument_parser.parse_args()
         self.command = arguments.command
         if self.command == 'train':
+            self.model = arguments.model
+            self.dataset = arguments.dataset
             self.dataset_path = arguments.dataset_path
             self.number_of_epochs = arguments.number_of_epochs
             self.batch_size = arguments.batch_size
             self.learning_rate = arguments.learning_rate
 
         # Creates the parent logger for the application
-        logger = logging.getLogger('lth')
+        self.logger = logging.getLogger('lth')
         logging_level_map = {
             'all': logging.NOTSET,
             'debug': logging.DEBUG,
@@ -127,12 +156,12 @@ class Application:
             'error': logging.ERROR,
             'critical': logging.CRITICAL
         }
-        logger.setLevel(logging_level_map[arguments.verbosity])
+        self.logger.setLevel(logging_level_map[arguments.verbosity])
         logging_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         console_logging_handler = logging.StreamHandler(sys.stdout)
         console_logging_handler.setLevel(logging_level_map[arguments.verbosity])
         console_logging_handler.setFormatter(logging_formatter)
-        logger.addHandler(console_logging_handler)
+        self.logger.addHandler(console_logging_handler)
         if arguments.logging_path is not None:
             logging_file_path = arguments.logging_path
             if os.path.isdir(logging_file_path):
@@ -141,7 +170,7 @@ class Application:
             file_logging_handler = logging.FileHandler(logging_file_path)
             file_logging_handler.setLevel(logging_level_map[arguments.verbosity])
             file_logging_handler.setFormatter(logging_formatter)
-            logger.addHandler(file_logging_handler)
+            self.logger.addHandler(file_logging_handler)
 
     @staticmethod
     def add_training_command(sub_parsers):
@@ -157,6 +186,18 @@ class Application:
         train_command_parser = sub_parsers.add_parser(
             'train',
             help='Trains the LeNet5 neural network on the MNIST dataset.'
+        )
+        train_command_parser.add_argument(
+            'model',
+            type=str,
+            choices=['lenet5', 'lenet-300-100'],
+            help='The name of the model that is to be trained.'
+        )
+        train_command_parser.add_argument(
+            'dataset',
+            type=str,
+            choices=['mnist', 'cifar10'],
+            help='The name of the dataset on which the model is to be trained.'
         )
         train_command_parser.add_argument(
             'dataset_path',

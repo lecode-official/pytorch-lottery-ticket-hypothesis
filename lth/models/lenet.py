@@ -5,14 +5,16 @@ import torch
 class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
-    def __init__(self, input_size=784, number_of_classes=10):
+    def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
         Initializes a new LeNet5 instance.
 
         Parameters
         ----------
-            input_size: int
-                The size of the input of the neural network. Defaults to the typical MNIST size of 28 * 28 = 784.
+            input_size: int or tuple
+                The size of the input of the neural network. Defaults to the typical MNIST size of 28x28.
+            number_of_input_channels: int
+                The number of channels that the input image has. Defaults to the typical MNIST number of channels: 1.
             number_of_classes: int
                 The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
                 network, which defaults to the number of classes in MNIST: 10.
@@ -22,11 +24,17 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         super(LeNet_300_100, self).__init__()
 
         # Stores the arguments for later use
-        self.input_size = input_size
+        if isinstance(input_size, tuple):
+            self.input_size = 1
+            for dimension in input_size:
+                self.input_size *= dimension
+        else:
+            self.input_size = input_size
+        self.number_of_input_channels = number_of_input_channels
         self.number_of_classes = number_of_classes
 
         # Creates the layers of the architecture, the first two full-connected layers are followed by a BatchNorm layer
-        self.fully_connected_1 = torch.nn.Linear(input_size, 300)
+        self.fully_connected_1 = torch.nn.Linear(self.input_size * self.number_of_input_channels, 300)
         self.batch_norm_1 = torch.nn.BatchNorm1d(num_features=300)
         self.fully_connected_2 = torch.nn.Linear(300, 100)
         self.batch_norm_2 = torch.nn.BatchNorm1d(num_features=100)
@@ -48,7 +56,7 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         """
 
         # Brings the input to the correct size
-        x = x.view(x.size(0), self.input_size)
+        x = x.view(x.size(0), self.input_size * self.number_of_input_channels)
 
         # Performs the forward pass through the neural network
         x = self.fully_connected_1(x)
