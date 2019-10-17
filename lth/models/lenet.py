@@ -1,8 +1,6 @@
 """Represents a module that contains the multiple neural network models based on the LeNet family of architectures."""
 
 import torch
-import torch.nn
-import torch.nn.functional as functional
 
 class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
@@ -27,9 +25,11 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         self.input_size = input_size
         self.number_of_classes = number_of_classes
 
-        # Creates the layers of the architecture
+        # Creates the layers of the architecture, the first two full-connected layers are followed by a BatchNorm layer
         self.fully_connected_1 = torch.nn.Linear(input_size, 300)
+        self.batch_norm_1 = torch.nn.BatchNorm1d(num_features=300)
         self.fully_connected_2 = torch.nn.Linear(300, 100)
+        self.batch_norm_2 = torch.nn.BatchNorm1d(num_features=100)
         self.fully_connected_3 = torch.nn.Linear(100, number_of_classes)
 
     def forward(self, x): # pylint: disable=arguments-differ
@@ -52,9 +52,11 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
 
         # Performs the forward pass through the neural network
         x = self.fully_connected_1(x)
-        x = functional.relu(x)
+        x = self.batch_norm_1(x)
+        x = torch.nn.functional.relu(x)
         x = self.fully_connected_2(x)
-        x = functional.relu(x)
+        x = self.batch_norm_2(x)
+        x = torch.nn.functional.relu(x)
         x = self.fully_connected_3(x)
 
         # Returns the result
@@ -86,23 +88,28 @@ class LeNet5(torch.nn.Module):
         # Invokes the constructor of the base class
         super(LeNet5, self).__init__()
 
-        # Adds the first convolution layer, since the convolution layer has a kernel size of 5x5, the receptive field shrinks by 4 on each side, after
-        # the convolution, an average pooling is applied with a filter size of 2x2, therefore, the receptive field shrinks by a factor of 0.5, the
-        # edge length of the output after the first convolution and the average pooling is calculated by (x - 4) / 2, e.g. convolution: (32, 32, 1) ->
-        # (28, 28, 6), average pooling: (28, 28, 6) -> (14, 14, 6)
+        # Adds the first convolution layer followed by a BatchNorm layer, since the convolution layer has a kernel size of 5x5, the receptive field
+        # shrinks by 4 on each side, after the convolution, a max pooling is applied with a filter size of 2x2, therefore, the receptive field shrinks
+        # by a factor of 0.5, the edge length of the output after the first convolution and the max pooling is calculated by (x - 4) / 2, e.g.
+        # convolution: (32, 32, 1) -> (28, 28, 6), avermaxage pooling: (28, 28, 6) -> (14, 14, 6)
         self.convolution_1 = torch.nn.Conv2d(number_of_input_channels, 6, kernel_size=5)
+        self.batch_norm_1 = torch.nn.BatchNorm2d(num_features=6)
         output_size = ((input_size[0] - 4) // 2, (input_size[1] - 4) // 2)
 
-        # Adds the second convolution layer after which a second average pooling will be performed, the output size is calculated exactly as in the
-        # first convolution layer, e.g. convolution: (14, 14, 6) -> (10, 10, 16), average pooling: (10, 10, 16) -> (5, 5, 16)
+        # Adds the second convolution layer followed by a BatchNorm layer, after which a second max pooling will be performed, the output size is
+        # calculated exactly as in the first convolution layer, e.g. convolution: (14, 14, 6) -> (10, 10, 16), max pooling: (10, 10, 16) -> (5, 5, 16)
         self.convolution_2 = torch.nn.Conv2d(6, 16, kernel_size=5)
+        self.batch_norm_2 = torch.nn.BatchNorm2d(num_features=16)
         output_size = ((output_size[0] - 4) // 2, (output_size[1] - 4) // 2)
 
-        # Adds three fully connected layers to the end, the input size of the first layer will be the product of the edge lengths of the receptive
-        # field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature maps in the second convolution (in this case the
-        # number of feature maps in the second convolution is 16, so the input size, could for example be 5 * 5 * 16 = 400)
+        # Adds three fully connected layers to the end, the first two of them followed by a BatchNorm layer, the input size of the first layer will be
+        # the product of the edge lengths of the receptive field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature
+        # maps in the second convolution (in this case the number of feature maps in the second convolution is 16, so the input size, could for
+        # example be 5 * 5 * 16 = 400)
         self.fully_connected_1 = torch.nn.Linear(output_size[0] * output_size[1] * 16, 120)
+        self.batch_norm_3 = torch.nn.BatchNorm1d(num_features=120)
         self.fully_connected_2 = torch.nn.Linear(120, 84)
+        self.batch_norm_4 = torch.nn.BatchNorm1d(num_features=84)
         self.fully_connected_3 = torch.nn.Linear(84, number_of_classes)
 
     def forward(self, x): # pylint: disable=arguments-differ
@@ -122,22 +129,26 @@ class LeNet5(torch.nn.Module):
 
         # Performs forward pass for the first convolutional layer
         x = self.convolution_1(x)
-        x = functional.relu(x)
-        x = functional.avg_pool2d(x, 2)
+        x = self.batch_norm_1(x)
+        x = torch.nn.functional.relu(x)
+        x = torch.nn.functional.max_pool2d(x, 2)
 
         # Performs forward pass for the second convolutional layer
         x = self.convolution_2(x)
-        x = functional.relu(x)
-        x = functional.avg_pool2d(x, 2)
+        x = self.batch_norm_2(x)
+        x = torch.nn.functional.relu(x)
+        x = torch.nn.functional.max_pool2d(x, 2)
 
         # Flattens the output of the second convolution layer so that is can be used as input for the first fully connected layer
         x = x.view(x.size(0), -1)
 
         # Performs the forward pass through all fully-connected layers
         x = self.fully_connected_1(x)
-        x = functional.relu(x)
+        x = self.batch_norm_3(x)
+        x = torch.nn.functional.relu(x)
         x = self.fully_connected_2(x)
-        x = functional.relu(x)
+        x = self.batch_norm_4(x)
+        x = torch.nn.functional.relu(x)
         x = self.fully_connected_3(x)
 
         # Returns the result

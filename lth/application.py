@@ -8,7 +8,7 @@ import logging
 import datetime
 import argparse
 
-from .models.lenet import LeNet5
+from .models.lenet import LeNet_300_100
 from .datasets.mnist import Mnist
 from .training.trainer import Trainer
 from .training.evaluator import Evaluator
@@ -44,7 +44,7 @@ class Application:
         dataset = Mnist(self.dataset_path, self.batch_size)
 
         # Loads the LeNet5 model and trains it
-        lenet5 = LeNet5(input_size=(28, 28))
+        lenet5 = LeNet_300_100()
         trainer = Trainer(lenet5, dataset)
         trainer.train(self.learning_rate, self.number_of_epochs)
 
