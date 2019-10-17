@@ -21,6 +21,7 @@ class Trainer:
 
         self.model = model
         self.dataset = dataset
+        self.logger = logging.getLogger('lth.training.trainer.Trainer')
 
     def train(self, learning_rate, number_of_epochs):
         """
@@ -37,10 +38,10 @@ class Trainer:
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
         if torch.cuda.is_available():
             device = torch.device('cuda:0') # pylint: disable=no-member
-            logging.info('Running on GPU (%s)', torch.cuda.get_device_name(device=device))
+            self.logger.info('Running on GPU (%s)', torch.cuda.get_device_name(device=device))
         else:
             device = torch.device('cpu') # pylint: disable=no-member
-            logging.info('Running on CPU')
+            self.logger.info('Running on CPU')
 
         # Transfers the model to the selected device
         self.model.to(device)
@@ -50,7 +51,7 @@ class Trainer:
         optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate)
 
         # Trains the neural network for multiple epochs
-        logging.info('Starting training...')
+        self.logger.info('Starting training...')
         for epoch in range(number_of_epochs):
 
             # Cycles through all batches in the dataset and trains the neural network
@@ -72,7 +73,7 @@ class Trainer:
 
             # Reports the average loss for the epoch
             loss = cumulative_loss / len(self.dataset.training_split)
-            logging.info('Epoch %d, average loss %d', epoch + 1, round(loss, 4))
+            self.logger.info('Epoch %d, average loss %f', epoch + 1, round(loss, 4))
 
         # Reports that the training has finished
-        logging.info('Finished training')
+        self.logger.info('Finished training')

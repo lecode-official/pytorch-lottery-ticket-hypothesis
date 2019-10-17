@@ -21,6 +21,7 @@ class Evaluator:
 
         self.model = model
         self.dataset = dataset
+        self.logger = logging.getLogger('lth.training.evaluator.Evaluator')
 
     def evaluate(self):
         """Evaluates the model."""
@@ -33,7 +34,7 @@ class Evaluator:
         self.model.to(device)
 
         # Cycles through the whole test split of the dataset and performs the evaluation
-        logging.info('Evaluating the trained model...')
+        self.logger.info('Evaluating the trained model...')
         correct_predictions = 0
         number_of_predictions = 0
         for batch in self.dataset.test_split:
@@ -49,5 +50,5 @@ class Evaluator:
 
         # Computes the accuracy and reports it to the user
         accuracy = 100 * correct_predictions / number_of_predictions
-        logging.info('Accuracy: %d%%', round(accuracy, 2))
-        logging.info('Finished evaluating the model')
+        self.logger.info('Accuracy: %f%%', round(accuracy, 2))
+        self.logger.info('Finished evaluating the model')

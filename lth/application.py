@@ -2,6 +2,10 @@
 
 __version__ = '1.0'
 
+import os
+import sys
+import logging
+import datetime
 import argparse
 
 from .models.lenet import LeNet5
@@ -75,6 +79,31 @@ class Application:
             help='Displays the version string of the application and exits.'
         )
 
+        # Adds the command line argument for the version of the application
+        argument_parser.add_argument(
+            '-V',
+            '--verbosity',
+            dest='verbosity',
+            type=str,
+            choices=['all', 'debug', 'info', 'warning', 'error', 'critical'],
+            default='debug',
+            help='Sets the verbosity level of the logging. Defaults to "debug".'
+        )
+
+        # Adds the command line argument for the path to which the log file is to be written
+        argument_parser.add_argument(
+            '-l',
+            '--logging-path',
+            dest='logging_path',
+            type=str,
+            default=None,
+            help='''
+                The path to which the logging output is to be written. If this is a path to a file, then the log is written into the specified file.
+                If the file exists, it is overwritten. If this is a path to a directory, then a log file with a timestamp is created in that
+                directory.
+            '''
+        )
+
         # Adds the commands
         sub_parsers = argument_parser.add_subparsers(dest='command')
         Application.add_training_command(sub_parsers)
@@ -87,6 +116,32 @@ class Application:
             self.number_of_epochs = arguments.number_of_epochs
             self.batch_size = arguments.batch_size
             self.learning_rate = arguments.learning_rate
+
+        # Creates the parent logger for the application
+        logger = logging.getLogger('lth')
+        logging_level_map = {
+            'all': logging.NOTSET,
+            'debug': logging.DEBUG,
+            'info': logging.INFO,
+            'warning': logging.WARNING,
+            'error': logging.ERROR,
+            'critical': logging.CRITICAL
+        }
+        logger.setLevel(logging_level_map[arguments.verbosity])
+        logging_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        console_logging_handler = logging.StreamHandler(sys.stdout)
+        console_logging_handler.setLevel(logging_level_map[arguments.verbosity])
+        console_logging_handler.setFormatter(logging_formatter)
+        logger.addHandler(console_logging_handler)
+        if arguments.logging_path is not None:
+            logging_file_path = arguments.logging_path
+            if os.path.isdir(logging_file_path):
+                file_name = '{0}-lth.log'.format(datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S'))
+                logging_file_path = os.path.join(logging_file_path, file_name)
+            file_logging_handler = logging.FileHandler(logging_file_path)
+            file_logging_handler.setLevel(logging_level_map[arguments.verbosity])
+            file_logging_handler.setFormatter(logging_formatter)
+            logger.addHandler(file_logging_handler)
 
     @staticmethod
     def add_training_command(sub_parsers):

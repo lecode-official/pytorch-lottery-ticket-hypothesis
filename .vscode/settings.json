@@ -23,9 +23,11 @@
         "Yann",
         "convolutional",
         "cuda",
+        "isdir",
         "lenet",
         "optim",
         "pylint",
-        "relu"
+        "relu",
+        "strftime"
     ]
 }
