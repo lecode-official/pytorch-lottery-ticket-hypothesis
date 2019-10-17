@@ -91,12 +91,12 @@ class LeNet5(torch.nn.Module):
         # edge length of the output after the first convolution and the average pooling is calculated by (x - 4) / 2, e.g. convolution: (32, 32, 1) ->
         # (28, 28, 6), average pooling: (28, 28, 6) -> (14, 14, 6)
         self.convolution_1 = torch.nn.Conv2d(number_of_input_channels, 6, kernel_size=5)
-        output_size = ((input_size[0] - 4) / 2, (input_size[1] - 4) / 2)
+        output_size = ((input_size[0] - 4) // 2, (input_size[1] - 4) // 2)
 
         # Adds the second convolution layer after which a second average pooling will be performed, the output size is calculated exactly as in the
         # first convolution layer, e.g. convolution: (14, 14, 6) -> (10, 10, 16), average pooling: (10, 10, 16) -> (5, 5, 16)
         self.convolution_2 = torch.nn.Conv2d(6, 16, kernel_size=5)
-        output_size = ((output_size[0] - 4) / 2, (output_size[1] - 4) / 2)
+        output_size = ((output_size[0] - 4) // 2, (output_size[1] - 4) // 2)
 
         # Adds three fully connected layers to the end, the input size of the first layer will be the product of the edge lengths of the receptive
         # field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature maps in the second convolution (in this case the

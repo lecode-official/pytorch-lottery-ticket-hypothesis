@@ -1,3 +1,6 @@
 
 # Ignores the compiled Python files
 __pycache__
+
+# Ignores downloaded datasets
+/datasets

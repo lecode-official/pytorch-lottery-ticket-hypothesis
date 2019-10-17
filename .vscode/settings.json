@@ -8,11 +8,23 @@
         "--max-line-length", "150"
     ],
 
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/__pycache__": true
+    },
+
     "cSpell.words": [
         "Conv",
         "MNIST",
         "Yann",
         "convolutional",
+        "cuda",
+        "lenet",
+        "optim",
         "pylint",
         "relu"
     ]
