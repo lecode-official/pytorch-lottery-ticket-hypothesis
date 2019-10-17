@@ -29,6 +29,7 @@
         "optim",
         "pylint",
         "relu",
-        "strftime"
+        "strftime",
+        "tqdm"
     ]
 }

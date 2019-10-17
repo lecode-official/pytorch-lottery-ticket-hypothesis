@@ -32,7 +32,7 @@ dependencies:
   - numpy=1.17.2=py37haad9e8e_0
   - numpy-base=1.17.2=py37hde5b4d6_0
   - olefile=0.46=py37_0
-  - openssl=1.1.1d=h7b6447c_2
+  - openssl=1.1.1d=h7b6447c_3
   - pillow=6.2.0=py37h34e0f95_0
   - pip=19.2.3=py37_0
   - pycparser=2.19=py37_0
@@ -46,6 +46,7 @@ dependencies:
   - sqlite=3.30.0=h7b6447c_0
   - tk=8.6.8=hbc83047_0
   - torchvision=0.4.1=py37_cu101
+  - tqdm=4.36.1=py_0
   - wheel=0.33.6=py37_0
   - wrapt=1.11.2=py37h7b6447c_0
   - xz=5.2.4=h14c3975_4

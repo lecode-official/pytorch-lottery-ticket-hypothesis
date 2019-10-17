@@ -2,6 +2,7 @@
 
 import logging
 
+import tqdm
 import torch
 
 class Trainer:
@@ -56,7 +57,7 @@ class Trainer:
 
             # Cycles through all batches in the dataset and trains the neural network
             cumulative_loss = 0
-            for batch in self.dataset.training_split:
+            for batch in tqdm.tqdm(self.dataset.training_split, desc='Epoch {0}'.format(epoch + 1), unit='batch'):
 
                 # Gets the current training batch and resets the gradients of the optimizer
                 inputs, labels = batch

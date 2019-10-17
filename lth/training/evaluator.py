@@ -2,6 +2,7 @@
 
 import logging
 
+import tqdm
 import torch
 
 class Evaluator:
@@ -37,7 +38,7 @@ class Evaluator:
         self.logger.info('Evaluating the trained model...')
         correct_predictions = 0
         number_of_predictions = 0
-        for batch in self.dataset.test_split:
+        for batch in tqdm.tqdm(self.dataset.test_split, unit='batch'):
             inputs, labels = batch
             inputs = inputs.to(device)
             labels = labels.to(device)
