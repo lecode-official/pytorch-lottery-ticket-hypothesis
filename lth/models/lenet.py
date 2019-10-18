@@ -2,6 +2,8 @@
 
 import torch
 
+from ..models.layers import LayerKind
+
 class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
@@ -25,6 +27,7 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
 
         # Exposes some information about the model architecture
         self.name = 'LeNet-300-100'
+        self.pruning_rates = 0.2
 
         # Stores the arguments for later use
         if isinstance(input_size, tuple):
@@ -101,6 +104,10 @@ class LeNet5(torch.nn.Module):
 
         # Exposes some information about the model architecture
         self.name = 'LeNet5'
+        self.pruning_rates = {
+            LayerKind.fully_connected: 0.2,
+            LayerKind.convolution_2d: 0.1
+        }
 
         # Adds the first convolution layer followed by a BatchNorm layer, since the convolution layer has a kernel size of 5x5, the receptive field
         # shrinks by 4 on each side, after the convolution, a max pooling is applied with a filter size of 2x2, therefore, the receptive field shrinks

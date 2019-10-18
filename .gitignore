@@ -4,3 +4,6 @@ __pycache__
 
 # Ignores downloaded datasets
 /datasets
+
+# Excludes the database of rope, which is a Python module used for refactoring
+.ropeproject

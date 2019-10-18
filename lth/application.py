@@ -74,8 +74,8 @@ class Application:
 
         # Prunes the network
         self.logger.info('Pruning the neural network...')
-        pruner = LayerWiseMagnitudePruner(model, 0.2, 0.1)
-        pruning_masks = pruner.prune()
+        pruner = LayerWiseMagnitudePruner(model)
+        pruning_masks = pruner.create_pruning_masks()
         for layer_name in pruning_masks:
             layer_weights = model.state_dict()['{0}.weight'.format(layer_name)]
             pruned_weights = layer_weights * pruning_masks[layer_name]

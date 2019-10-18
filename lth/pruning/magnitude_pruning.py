@@ -2,7 +2,7 @@
 
 import torch
 
-from .layers import Layer, LayerKind
+from ..models.layers import Layer
 
 class LayerWiseMagnitudePruner:
     """
@@ -11,7 +11,7 @@ class LayerWiseMagnitudePruner:
     Neural Networks".
     """
 
-    def __init__(self, model, fully_connected_pruning_rate, convolution_pruning_rate):
+    def __init__(self, model):
         """
         Initializes a new LayerWiseMagnitudePruner instance.
 
@@ -19,21 +19,13 @@ class LayerWiseMagnitudePruner:
         ----------
             model: torch.nn.Module
                 The neural network model that is to be pruned.
-            fully_connected_pruning_rate: float
-                The pruning rate that is to be used for fully-connected layers. The original paper uses 20% (i.e. a pruning rate of 0.2) for most
-                models.
-            convolution_pruning_rate: float
-                The pruning rate that is to be used for convolutional layers. The original paper uses 10% (i.e. a pruning rate of 0.1) for most
-                models.
         """
 
         self.model = model
-        self.fully_connected_pruning_rate = fully_connected_pruning_rate
-        self.convolution_pruning_rate = convolution_pruning_rate
 
-    def prune(self):
+    def create_pruning_masks(self):
         """
-        Performs the layer-wise pruning on the model.
+        Generates the pruning masks for all layers of the model.
 
         Returns
         -------
@@ -47,6 +39,11 @@ class LayerWiseMagnitudePruner:
         masks = {}
         for layer in Layer.get_layers_from_model(self.model):
 
+            # Determines the pruning rate of the layer, if the pruning rate is 0.0, then no pruning is performed on the layer
+            layer_pruning_rate = self.get_layer_pruning_rate(layer)
+            if layer_pruning_rate == 0.0:
+                continue
+
             # Flattens the weights of the layer, because the sorting can only be performed for a single dimension
             weights = layer.weights.reshape(-1)
 
@@ -57,13 +54,8 @@ class LayerWiseMagnitudePruner:
             # the weights with the smallest magnitude are at the beginning of the this array
             sorted_indices = torch.argsort(weights) # pylint: disable=no-member
 
-            # Determines the number of weights to prune based on the layer type
-            if layer.kind == LayerKind.fully_connected:
-                number_of_pruned_weights = int(self.fully_connected_pruning_rate * len(sorted_indices))
-            else:
-                number_of_pruned_weights = int(self.convolution_pruning_rate * len(sorted_indices))
-
             # Creates the pruning mask which is 1 for all weights that are not pruned and
+            number_of_pruned_weights = int(layer_pruning_rate * len(sorted_indices))
             pruning_mask = torch.zeros_like(weights, dtype=torch.uint8) # pylint: disable=no-member
             pruning_mask[sorted_indices[:number_of_pruned_weights]] = 0
             pruning_mask[sorted_indices[number_of_pruned_weights:]] = 1
@@ -73,3 +65,27 @@ class LayerWiseMagnitudePruner:
 
         # Returns the pruning masks for all layers
         return masks
+
+    def get_layer_pruning_rate(self, layer):
+        """
+        Determines the rate at which the specified layer should be pruned. For example a pruning rate of 0.2 means that 20% of the weights will be
+        pruned.
+
+        Parameters
+        ----------
+            layer: Layer
+                The layer for which the pruning rate is to be determined.
+
+        Returns
+        -------
+            float
+                Returns the pruning rate of the specified layer. A pruning rate of 0.0 means that the layer should not be pruned at all.
+        """
+
+        # A model can specify model-wide pruning rate, which is to be applied to all layers, or it can specify pruning rates based on layer type, if
+        # no pruning rate was specified for a layer kind, then it is assumed to be 0.0 (meaning that the layer should not be pruned at all)
+        if isinstance(self.model.pruning_rates, float):
+            return self.model.pruning_rates
+        if isinstance(self.model.pruning_rates, dict) and layer.kind in self.model.pruning_rates:
+            return self.model.pruning_rates[layer.king]
+        return 0.0
