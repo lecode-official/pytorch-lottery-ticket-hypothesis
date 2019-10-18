@@ -23,6 +23,9 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         # Invokes the constructor of the base class
         super(LeNet_300_100, self).__init__()
 
+        # Exposes some information about the model architecture
+        self.name = 'LeNet-300-100'
+
         # Stores the arguments for later use
         if isinstance(input_size, tuple):
             self.input_size = 1
@@ -95,6 +98,9 @@ class LeNet5(torch.nn.Module):
 
         # Invokes the constructor of the base class
         super(LeNet5, self).__init__()
+
+        # Exposes some information about the model architecture
+        self.name = 'LeNet5'
 
         # Adds the first convolution layer followed by a BatchNorm layer, since the convolution layer has a kernel size of 5x5, the receptive field
         # shrinks by 4 on each side, after the convolution, a max pooling is applied with a filter size of 2x2, therefore, the receptive field shrinks

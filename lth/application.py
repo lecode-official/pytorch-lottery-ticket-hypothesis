@@ -55,22 +55,14 @@ class Application:
 
         # Creates the model
         if self.model == 'lenet5':
-            model = LeNet5(dataset.get_input_size(), dataset.get_number_of_channels(), dataset.get_number_of_classes())
+            model = LeNet5(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
         elif self.model == 'lenet-300-100':
-            model = LeNet_300_100(dataset.get_input_size(), dataset.get_number_of_channels(), dataset.get_number_of_classes())
+            model = LeNet_300_100(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
         else:
             raise ValueError('Unknown model: {0}.'.format(self.dataset))
 
         # Logs out the model and dataset that is being trained on
-        model_map = {
-            'lenet-300-100': 'LeNet-300-100',
-            'lenet5': 'LeNet5'
-        }
-        dataset_map = {
-            'mnist': 'MNIST',
-            'cifar10': 'Cifar10'
-        }
-        self.logger.info('Training %s on %s.', model_map[self.model], dataset_map[self.dataset])
+        self.logger.info('Training %s on %s.', model.name, dataset.name)
 
         # Trains the model on the training split of the dataset
         trainer = Trainer(model, dataset)

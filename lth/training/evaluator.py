@@ -51,5 +51,5 @@ class Evaluator:
 
         # Computes the accuracy and reports it to the user
         accuracy = 100 * correct_predictions / number_of_predictions
-        self.logger.info('Accuracy: %f%%', round(accuracy, 2))
-        self.logger.info('Finished evaluating the model')
+        self.logger.info('Accuracy: %f%%.', round(accuracy, 2))
+        self.logger.info('Finished evaluating the model.')
