@@ -1,5 +1,8 @@
 """Represents a module that contains a pruning methods that prune based on the magnitude of the weights."""
 
+import logging
+
+import tqdm
 import torch
 
 from ..models.layers import Layer
@@ -22,6 +25,7 @@ class LayerWiseMagnitudePruner:
         """
 
         self.model = model
+        self.logger = logging.getLogger('lth.pruning.magnitude_pruning.LayerWiseMagnitudePruner')
 
     def create_pruning_masks(self):
         """
@@ -37,7 +41,8 @@ class LayerWiseMagnitudePruner:
 
         # Creates the pruning masks for each layer of the model
         masks = {}
-        for layer in Layer.get_layers_from_model(self.model):
+        self.logger.info('Generating pruning mask for model %s...', self.model.name)
+        for layer in tqdm.tqdm(Layer.get_layers_from_model(self.model), unit='layer'):
 
             # Determines the pruning rate of the layer, if the pruning rate is 0.0, then no pruning is performed on the layer
             layer_pruning_rate = self.get_layer_pruning_rate(layer)
@@ -64,6 +69,7 @@ class LayerWiseMagnitudePruner:
             masks[layer.name] = pruning_mask.reshape(layer.weights.shape)
 
         # Returns the pruning masks for all layers
+        self.logger.info('Finished generating pruning mask for model %s.', self.model.name)
         return masks
 
     def get_layer_pruning_rate(self, layer):

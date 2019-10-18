@@ -73,14 +73,12 @@ class Application:
         evaluator.evaluate()
 
         # Prunes the network
-        self.logger.info('Pruning the neural network...')
         pruner = LayerWiseMagnitudePruner(model)
         pruning_masks = pruner.create_pruning_masks()
         for layer_name in pruning_masks:
             layer_weights = model.state_dict()['{0}.weight'.format(layer_name)]
             pruned_weights = layer_weights * pruning_masks[layer_name]
             model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
-        self.logger.info('Finished the pruning.')
 
         # Evaluates the pruned model on the test split of the dataset
         evaluator = Evaluator(model, dataset)
