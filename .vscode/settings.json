@@ -20,16 +20,19 @@
     "cSpell.words": [
         "Cifar",
         "Conv",
+        "Frankle",
         "MNIST",
         "Yann",
         "convolutional",
         "cuda",
+        "dtype",
         "isdir",
         "lenet",
         "optim",
         "pylint",
         "relu",
         "strftime",
-        "tqdm"
+        "tqdm",
+        "uint"
     ]
 }

@@ -110,7 +110,7 @@ class LeNet5(torch.nn.Module):
         self.batch_norm_2 = torch.nn.BatchNorm2d(num_features=16)
         output_size = ((output_size[0] - 4) // 2, (output_size[1] - 4) // 2)
 
-        # Adds three fully connected layers to the end, the first two of them followed by a BatchNorm layer, the input size of the first layer will be
+        # Adds three fully-connected layers to the end, the first two of them followed by a BatchNorm layer, the input size of the first layer will be
         # the product of the edge lengths of the receptive field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature
         # maps in the second convolution (in this case the number of feature maps in the second convolution is 16, so the input size, could for
         # example be 5 * 5 * 16 = 400)
@@ -147,7 +147,7 @@ class LeNet5(torch.nn.Module):
         x = torch.nn.functional.relu(x)
         x = torch.nn.functional.max_pool2d(x, 2)
 
-        # Flattens the output of the second convolution layer so that is can be used as input for the first fully connected layer
+        # Flattens the output of the second convolution layer so that is can be used as input for the first fully-connected layer
         x = x.view(x.size(0), -1)
 
         # Performs the forward pass through all fully-connected layers

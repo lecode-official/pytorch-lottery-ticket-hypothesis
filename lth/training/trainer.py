@@ -39,10 +39,10 @@ class Trainer:
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
         if torch.cuda.is_available():
             device = torch.device('cuda:0') # pylint: disable=no-member
-            self.logger.info('Running on GPU (%s)', torch.cuda.get_device_name(device=device))
+            self.logger.info('Running on the GPU (%s).', torch.cuda.get_device_name(device=device))
         else:
             device = torch.device('cpu') # pylint: disable=no-member
-            self.logger.info('Running on CPU')
+            self.logger.info('Running on the CPU.')
 
         # Transfers the model to the selected device
         self.model.to(device)
@@ -74,7 +74,7 @@ class Trainer:
 
             # Reports the average loss for the epoch
             loss = cumulative_loss / len(self.dataset.training_split)
-            self.logger.info('Epoch %d, average loss %f', epoch + 1, round(loss, 4))
+            self.logger.info('Finished Epoch %d, average loss %f.', epoch + 1, round(loss, 4))
 
         # Reports that the training has finished
-        self.logger.info('Finished training')
+        self.logger.info('Finished the training.')

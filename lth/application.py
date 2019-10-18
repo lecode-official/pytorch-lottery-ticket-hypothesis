@@ -13,6 +13,7 @@ from .datasets.cifar import Cifar10
 from .training.trainer import Trainer
 from .training.evaluator import Evaluator
 from .models.lenet import LeNet_300_100, LeNet5
+from .pruning.magnitude_pruning import LayerWiseMagnitudePruner
 
 class Application:
     """Represents the lottery ticket hypothesis application."""
@@ -76,6 +77,20 @@ class Application:
         trainer.train(self.learning_rate, self.number_of_epochs)
 
         # Evaluates the model on the test split of the dataset
+        evaluator = Evaluator(model, dataset)
+        evaluator.evaluate()
+
+        # Prunes the network
+        self.logger.info('Pruning the neural network...')
+        pruner = LayerWiseMagnitudePruner(model, 0.2, 0.1)
+        pruning_masks = pruner.prune()
+        for layer_name in pruning_masks:
+            layer_weights = model.state_dict()['{0}.weight'.format(layer_name)]
+            pruned_weights = layer_weights * pruning_masks[layer_name]
+            model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
+        self.logger.info('Finished the pruning.')
+
+        # Evaluates the pruned model on the test split of the dataset
         evaluator = Evaluator(model, dataset)
         evaluator.evaluate()
 
