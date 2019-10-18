@@ -28,6 +28,7 @@
         "dtype",
         "isdir",
         "lenet",
+        "numel",
         "optim",
         "pylint",
         "relu",

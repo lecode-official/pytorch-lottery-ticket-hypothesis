@@ -95,3 +95,32 @@ class LayerWiseMagnitudePruner:
         if isinstance(self.model.pruning_rates, dict) and layer.kind in self.model.pruning_rates:
             return self.model.pruning_rates[layer.king]
         return 0.0
+
+    def apply_pruning_masks(self, pruning_masks):
+        """
+        Applies the pruning masks generated using create_pruning_masks. This is effectively the actual pruning.
+
+        Parameters
+        ----------
+            pruning_masks: dict
+                A dictionary where the keys are the names of the layers and the values are the pruning masks for the layer.
+        """
+
+        # Applies the pruning masks for all layers
+        total_number_of_weights = 0
+        number_of_pruned_weights = 0
+        number_of_zero_weights = 0
+        self.logger.info('Applying pruning masks to the layers of the model...')
+        for layer_name in tqdm.tqdm(pruning_masks, unit='layer'):
+            layer_weights = self.model.state_dict()['{0}.weight'.format(layer_name)]
+            total_number_of_weights += layer_weights.numel()
+            pruned_weights = layer_weights * pruning_masks[layer_name]
+            number_of_pruned_weights += torch.sum(pruning_masks[layer_name] == 0).item() # pylint: disable=no-member
+            number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
+            self.model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
+        self.logger.info(
+            'Finished applying the pruning masks to the layers of the model. %d of %d weights were pruned, the new sparsity of the model is %1.2f%%.',
+            number_of_pruned_weights,
+            total_number_of_weights,
+            number_of_zero_weights / total_number_of_weights * 100
+        )

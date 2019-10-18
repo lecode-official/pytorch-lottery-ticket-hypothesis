@@ -75,10 +75,7 @@ class Application:
         # Prunes the network
         pruner = LayerWiseMagnitudePruner(model)
         pruning_masks = pruner.create_pruning_masks()
-        for layer_name in pruning_masks:
-            layer_weights = model.state_dict()['{0}.weight'.format(layer_name)]
-            pruned_weights = layer_weights * pruning_masks[layer_name]
-            model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
+        pruner.apply_pruning_masks(pruning_masks)
 
         # Evaluates the pruned model on the test split of the dataset
         evaluator = Evaluator(model, dataset)
