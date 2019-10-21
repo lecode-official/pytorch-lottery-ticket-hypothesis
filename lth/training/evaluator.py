@@ -37,8 +37,12 @@ class Evaluator:
             # Transfers the model to the selected device
             self.model.to(device)
 
+            # Puts the model into evaluation mode (this is important for some layers, like dropout and BatchNorm which have different bahavior during
+            # training and evaluation)
+            self.model.eval()
+
             # Cycles through the whole test split of the dataset and performs the evaluation
-            self.logger.info('Evaluating the trained model...')
+            self.logger.info('Evaluating the model...')
             correct_predictions = 0
             number_of_predictions = 0
             for batch in tqdm.tqdm(self.dataset.test_split, unit='batch'):

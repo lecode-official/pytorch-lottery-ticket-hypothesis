@@ -47,6 +47,10 @@ class Trainer:
         # Transfers the model to the selected device
         self.model.to(device)
 
+        # Puts the model in training mode (this is important for some layers, like dropout and BatchNorm which have different bahavior during training
+        # and evaluation)
+        self.model.train()
+
         # Defines the loss function and the optimizer for the model
         loss_function = torch.nn.CrossEntropyLoss()
         optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate)
