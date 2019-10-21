@@ -67,21 +67,18 @@ class Application:
         # Logs out the model and dataset that is being trained on
         self.logger.info('Training %s on %s.', model.name, dataset.name)
 
-        # Trains the model on the training split of the dataset
+        # Creates the trainer, the evaluator, and the pruner for the lottery ticket creation
         trainer = Trainer(model, dataset)
-        trainer.train(self.learning_rate, self.number_of_epochs)
-
-        # Evaluates the model on the test split of the dataset
         evaluator = Evaluator(model, dataset)
-        evaluator.evaluate()
-
-        # Prunes the network
         pruner = LayerWiseMagnitudePruner(model)
-        pruning_masks = pruner.create_pruning_masks()
-        pruner.apply_pruning_masks(pruning_masks)
 
-        # Evaluates the pruned model on the test split of the dataset
-        evaluator.evaluate()
+        # Creates the lottery ticket by repeatedly training and pruning the model
+        for _ in range(10):
+            trainer.train(self.learning_rate, self.number_of_epochs)
+            evaluator.evaluate()
+            pruning_masks = pruner.create_pruning_masks()
+            pruner.apply_pruning_masks(pruning_masks)
+            evaluator.evaluate()
 
     def parse_command_line_arguments(self):
         """Parses the command line arguments of the application."""
