@@ -59,8 +59,14 @@ class LayerWiseMagnitudePruner:
             # the weights with the smallest magnitude are at the beginning of the this array
             sorted_indices = torch.argsort(weights)
 
+            # Determines the number of weights that should be pruned, since pruning is an iterative process of training, pruning, re-training, it
+            # could be that the specified model was already sparsified previously, because the pruning strategy employed here is to sort the elements
+            # by magnitude and then take the smallest n%, the same weights that are already zero would be pruned in any consecutive pruning,
+            # therefore, the number of zeros in the layer are added to the number of pruned weights, otherwise no further pruning would occur
+            number_of_zero_weights = weights.numel() - weights.nonzero().size(0)
+            number_of_pruned_weights = int(layer_pruning_rate * len(sorted_indices)) + number_of_zero_weights
+
             # Creates the pruning mask which is 1 for all weights that are not pruned and
-            number_of_pruned_weights = int(layer_pruning_rate * len(sorted_indices))
             pruning_mask = torch.zeros_like(weights, dtype=torch.uint8)
             pruning_mask[sorted_indices[:number_of_pruned_weights]] = 0
             pruning_mask[sorted_indices[number_of_pruned_weights:]] = 1
@@ -120,7 +126,7 @@ class LayerWiseMagnitudePruner:
             self.model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
         self.logger.info('Finished applying the pruning masks to the layers of the model.')
         self.logger.info(
-            '%d of %d weights were pruned, the new sparsity of the model is %1.2f%%.',
+            '%d of %d weights were pruned, sparsity of the model: %1.2f%%.',
             number_of_pruned_weights,
             total_number_of_weights,
             number_of_zero_weights / total_number_of_weights * 100

@@ -10,7 +10,7 @@ class Evaluator:
 
     def __init__(self, model, dataset):
         """
-        Initializes a new StandardEvaluator instance.
+        Initializes a new Evaluator instance.
 
         Parameters
         ----------

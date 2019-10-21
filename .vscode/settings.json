@@ -35,6 +35,7 @@
         "optim",
         "pylint",
         "relu",
+        "sparsified",
         "strftime",
         "tqdm",
         "uint"

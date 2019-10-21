@@ -10,7 +10,7 @@ class Trainer:
 
     def __init__(self, model, dataset):
         """
-        Initializes a new StandardTrainer instance.
+        Initializes a new Trainer instance.
 
         Parameters
         ----------
@@ -63,10 +63,12 @@ class Trainer:
             cumulative_loss = 0
             for batch in tqdm.tqdm(self.dataset.training_split, desc='Epoch {0}'.format(epoch + 1), unit='batch'):
 
-                # Gets the current training batch and resets the gradients of the optimizer
+                # Gets the current training batch
                 inputs, labels = batch
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+
+                # Resets the gradients of the optimizer
                 optimizer.zero_grad()
 
                 # Performs a forward pass through the neural network, calculates its gradient, and optimizes its weights
