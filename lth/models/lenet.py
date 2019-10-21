@@ -2,9 +2,9 @@
 
 import torch
 
-from ..models.layers import LayerKind
+from .model import BaseModel, LayerKind
 
-class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
+class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
@@ -76,7 +76,7 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         # Returns the result
         return x
 
-class LeNet5(torch.nn.Module):
+class LeNet5(BaseModel):
     """
     Represents the classical convolutional neural network architecture LeNet5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
     Applied to Document Recognition.", where it was used for character recognition.

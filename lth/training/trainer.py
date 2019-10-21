@@ -71,10 +71,14 @@ class Trainer:
                 # Resets the gradients of the optimizer
                 optimizer.zero_grad()
 
-                # Performs a forward pass through the neural network, calculates its gradient, and optimizes its weights
+                # Performs a forward pass through the neural network
                 outputs = self.model(inputs)
                 loss = loss_function(outputs, labels)
+
+                # Computes the gradients and applies the pruning mask to it, this makes sure that all pruned weights are frozen and do not get updated
                 loss.backward()
+                for layer in self.model.get_layers():
+                    layer.weights.grad *= self.model.get_pruning_masks()[layer.name]
                 optimizer.step()
                 cumulative_loss += loss.item()
 

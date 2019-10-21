@@ -76,8 +76,7 @@ class Application:
         for _ in range(10):
             trainer.train(self.learning_rate, self.number_of_epochs)
             evaluator.evaluate()
-            pruning_masks = pruner.create_pruning_masks()
-            pruner.apply_pruning_masks(pruning_masks)
+            pruner.prune()
             evaluator.evaluate()
 
     def parse_command_line_arguments(self):
