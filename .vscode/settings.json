@@ -28,6 +28,7 @@
         "convolutional",
         "cuda",
         "dtype",
+        "functools",
         "isdir",
         "lenet",
         "numel",

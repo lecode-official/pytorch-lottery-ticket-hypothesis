@@ -118,8 +118,9 @@ class LayerWiseMagnitudePruner:
             number_of_pruned_weights += torch.sum(pruning_masks[layer_name] == 0).item()
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
             self.model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
+        self.logger.info('Finished applying the pruning masks to the layers of the model.')
         self.logger.info(
-            'Finished applying the pruning masks to the layers of the model. %d of %d weights were pruned, the new sparsity of the model is %1.2f%%.',
+            '%d of %d weights were pruned, the new sparsity of the model is %1.2f%%.',
             number_of_pruned_weights,
             total_number_of_weights,
             number_of_zero_weights / total_number_of_weights * 100

@@ -7,6 +7,9 @@ import sys
 import logging
 import datetime
 import argparse
+import functools
+
+import tqdm
 
 from .datasets.mnist import Mnist
 from .datasets.cifar import Cifar10
@@ -103,7 +106,7 @@ class Application:
             '-v',
             '--version',
             action='version',
-            version='PyTorch LeNet5 Training Command Line Interface {0}'.format(__version__),
+            version='Lottery Ticket Hypothesis Experiments {0}'.format(__version__),
             help='Displays the version string of the application and exits.'
         )
 
@@ -116,6 +119,18 @@ class Application:
             choices=['all', 'debug', 'info', 'warning', 'error', 'critical'],
             default='debug',
             help='Sets the verbosity level of the logging. Defaults to "debug".'
+        )
+
+        # Adds the command line argument that disables progress bars in the output of the application
+        argument_parser.add_argument(
+            '-P',
+            '--disable-progress-bar',
+            dest='disable_progress_bar',
+            action='store_true',
+            help='''
+                Disables the progress bar for all actions in the application. This is helpful if this application is used in a script, then the output
+                of the progress bar can be really messy and hard to parse.
+            '''
         )
 
         # Adds the command line argument for the path to which the log file is to be written
@@ -146,6 +161,12 @@ class Application:
             self.number_of_epochs = arguments.number_of_epochs
             self.batch_size = arguments.batch_size
             self.learning_rate = arguments.learning_rate
+
+        # Disables the rendering of the progress bar across the whole application, it would be very annoying to check for this everytime, luckily,
+        # tqdm has a disable flag, which is globally overwritten using functools (the partial function returns a new function, which internally calls
+        # the specified function, were the parameters are set automatically)
+        if arguments.disable_progress_bar:
+            tqdm.tqdm = functools.partial(tqdm.tqdm, disable=True)
 
         # Creates the parent logger for the application
         self.logger = logging.getLogger('lth')
