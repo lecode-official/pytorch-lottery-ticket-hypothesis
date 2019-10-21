@@ -40,7 +40,7 @@ class Application:
         if self.command == 'train':
             self.train()
         else:
-            raise ValueError('Unknown command: "{0}".'.format(self.command))
+            self.logger.error('No command specified, exiting.')
 
     def train(self):
         """Trains the LeNet5 model on the MNIST dataset."""
@@ -78,7 +78,6 @@ class Application:
         pruner.apply_pruning_masks(pruning_masks)
 
         # Evaluates the pruned model on the test split of the dataset
-        evaluator = Evaluator(model, dataset)
         evaluator.evaluate()
 
     def parse_command_line_arguments(self):

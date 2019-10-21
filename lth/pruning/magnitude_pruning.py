@@ -53,15 +53,15 @@ class LayerWiseMagnitudePruner:
             weights = layer.weights.reshape(-1)
 
             # Since the weights are pruned by their magnitude, the absolute values of the weights are retrieved
-            weights = torch.abs(weights) # pylint: disable=no-member
+            weights = torch.abs(weights)
 
             # Sorts the weights ascending by their magnitude, this makes it easy to prune weights with the smallest magnitude, because the indices of
             # the weights with the smallest magnitude are at the beginning of the this array
-            sorted_indices = torch.argsort(weights) # pylint: disable=no-member
+            sorted_indices = torch.argsort(weights)
 
             # Creates the pruning mask which is 1 for all weights that are not pruned and
             number_of_pruned_weights = int(layer_pruning_rate * len(sorted_indices))
-            pruning_mask = torch.zeros_like(weights, dtype=torch.uint8) # pylint: disable=no-member
+            pruning_mask = torch.zeros_like(weights, dtype=torch.uint8)
             pruning_mask[sorted_indices[:number_of_pruned_weights]] = 0
             pruning_mask[sorted_indices[number_of_pruned_weights:]] = 1
 
@@ -115,7 +115,7 @@ class LayerWiseMagnitudePruner:
             layer_weights = self.model.state_dict()['{0}.weight'.format(layer_name)]
             total_number_of_weights += layer_weights.numel()
             pruned_weights = layer_weights * pruning_masks[layer_name]
-            number_of_pruned_weights += torch.sum(pruning_masks[layer_name] == 0).item() # pylint: disable=no-member
+            number_of_pruned_weights += torch.sum(pruning_masks[layer_name] == 0).item()
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
             self.model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
         self.logger.info(

@@ -38,10 +38,10 @@ class Trainer:
 
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
         if torch.cuda.is_available():
-            device = torch.device('cuda:0') # pylint: disable=no-member
+            device = torch.device('cuda:0')
             self.logger.info('Running on the GPU (%s).', torch.cuda.get_device_name(device=device))
         else:
-            device = torch.device('cpu') # pylint: disable=no-member
+            device = torch.device('cpu')
             self.logger.info('Running on the CPU.')
 
         # Transfers the model to the selected device

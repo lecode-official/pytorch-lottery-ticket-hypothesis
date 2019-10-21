@@ -32,7 +32,7 @@ class Evaluator:
 
             # Checks if CUDA is available, in that case the evaluation is performed on the first GPU on the system, otherwise the CPU is used
             is_cuda_available = torch.cuda.is_available()
-            device = torch.device('cuda:0' if is_cuda_available else 'cpu') # pylint: disable=no-member
+            device = torch.device('cuda:0' if is_cuda_available else 'cpu')
 
             # Transfers the model to the selected device
             self.model.to(device)
@@ -46,7 +46,7 @@ class Evaluator:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 outputs = self.model(inputs)
-                _, predicted_classes = torch.max(outputs, 1) # pylint: disable=no-member
+                _, predicted_classes = torch.max(outputs, 1)
                 correctness = (predicted_classes == labels).squeeze()
                 for is_correct in correctness:
                     correct_predictions += is_correct.item()
@@ -54,5 +54,5 @@ class Evaluator:
 
             # Computes the accuracy and reports it to the user
             accuracy = 100 * correct_predictions / number_of_predictions
-            self.logger.info('Accuracy: %f%%.', round(accuracy, 2))
+            self.logger.info('Accuracy: %1.2f%%.', round(accuracy, 2))
             self.logger.info('Finished evaluating the model.')

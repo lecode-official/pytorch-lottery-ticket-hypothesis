@@ -5,7 +5,9 @@
 
     "python.pythonPath": "/home/dneumann/miniconda3/envs/lottery-ticket-hypothesis/bin/python",
     "python.linting.pylintArgs": [
-        "--max-line-length", "150"
+        "--max-line-length", "150",
+        "--generated-members=torch.*",
+        "--disable", "arguments-differ"
     ],
 
     "files.exclude": {

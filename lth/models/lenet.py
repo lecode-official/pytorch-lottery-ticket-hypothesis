@@ -46,7 +46,7 @@ class LeNet_300_100(torch.nn.Module): # pylint: disable=invalid-name
         self.batch_norm_2 = torch.nn.BatchNorm1d(num_features=100)
         self.fully_connected_3 = torch.nn.Linear(100, number_of_classes)
 
-    def forward(self, x): # pylint: disable=arguments-differ
+    def forward(self, x):
         """
         Performs the forward pass through the neural network.
 
@@ -133,7 +133,7 @@ class LeNet5(torch.nn.Module):
         self.batch_norm_4 = torch.nn.BatchNorm1d(num_features=84)
         self.fully_connected_3 = torch.nn.Linear(84, number_of_classes)
 
-    def forward(self, x): # pylint: disable=arguments-differ
+    def forward(self, x):
         """
         Performs the forward pass through the neural network.
 
