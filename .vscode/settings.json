@@ -23,6 +23,7 @@
         "Cifar",
         "Conv",
         "Frankle",
+        "Glorot",
         "MNIST",
         "Yann",
         "convolutional",

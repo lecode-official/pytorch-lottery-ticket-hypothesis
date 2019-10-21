@@ -109,13 +109,12 @@ class LayerWiseMagnitudePruner:
         number_of_zero_weights = 0
         self.logger.info('Applying pruning masks to the layers of the model...')
         pruning_masks = self.model.get_pruning_masks()
-        for layer_name in tqdm.tqdm(pruning_masks, unit='layer'):
-            layer_weights = self.model.state_dict()['{0}.weight'.format(layer_name)]
-            total_number_of_weights += layer_weights.numel()
-            pruned_weights = layer_weights * pruning_masks[layer_name]
-            number_of_pruned_weights += torch.sum(pruning_masks[layer_name] == 0).item()
+        for layer in tqdm.tqdm(self.model.get_layers(), unit='layer'):
+            total_number_of_weights += layer.weights.numel()
+            pruned_weights = layer.weights * pruning_masks[layer.name]
+            number_of_pruned_weights += torch.sum(pruning_masks[layer.name] == 0).item()
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
-            self.model.state_dict()['{0}.weight'.format(layer_name)].copy_(pruned_weights)
+            self.model.update_layer_weights(layer.name, pruned_weights)
         self.logger.info('Finished applying the pruning masks to the layers of the model.')
         self.logger.info(
             '%d of %d weights were pruned, sparsity of the model: %1.2f%%.',

@@ -13,7 +13,7 @@ class LayerKind(Enum):
 class Layer:
     """Represents a single prunable layer in the neural network."""
 
-    def __init__(self, name, kind, weights):
+    def __init__(self, name, kind, weights, biases):
         """
         Initializes a new Layer instance.
 
@@ -25,11 +25,14 @@ class Layer:
                 The kind of the layer.
             weights:
                 The weights of the layer.
+            biases:
+                The biases of the layer.
         """
 
         self.name = name
         self.kind = kind
         self.weights = weights
+        self.biases = biases
 
 class BaseModel(torch.nn.Module):
     """Represents the base class for all models."""
@@ -40,22 +43,22 @@ class BaseModel(torch.nn.Module):
         # Invokes the constructor of the base class
         super(BaseModel, self).__init__()
 
-        # Initializes the pruning masks, which are used for pruning and freezing pruned weights
+        # Initializes some class members
+        self.layers = None
+        self.initial_weights = None
+        self.initial_biases = None
         self.pruning_masks = None
 
-    def get_layers(self):
+    def initialize(self):
         """
-        Retrieves the layers of the model.
-
-        Returns
-        -------
-            list
-                Returns a list that contains the layers of the model.
+        Initializes the model. It initializes the weights of the model using Xavier Normal (equivalent to Gaussian Glorot used in the original Lottery
+        Ticket Hypothesis paper). It also creates an initial pruning mask for the layers of the model. These are initialized with all ones. A pruning
+        mask with all ones does nothing. This method must be called by all sub-classes at the end of their constructor.
         """
 
         # Gets the all the fully-connected and convolutional layers of the model (these are the only ones that are being pruned, if new layer types
         # are introduced, then they have to be added here, but right now all models only consist of these two types)
-        layers = []
+        self.layers = []
         for layer_name in self._modules:
 
             # Gets the layer object from the model
@@ -72,22 +75,44 @@ class BaseModel(torch.nn.Module):
             if layer_kind is None:
                 continue
 
-            # Gets the weights of the layer and
+            # Gets the weights and biases of the layer
+            weights = None
+            biases = None
             for parameter_name, parameter in self.named_parameters():
                 if parameter_name == '{0}.weight'.format(layer_name):
-                    layers.append(Layer(layer_name, layer_kind, parameter))
+                    weights = parameter
+                if parameter_name == '{0}.bias'.format(layer_name):
+                    biases = parameter
+            self.layers.append(Layer(layer_name, layer_kind, weights, biases))
 
-        # Returns the layers that were retrieved
-        return layers
+        # Initializes the weights of the model using the Xavier Normal initialization method
+        for layer in self.layers:
+            torch.nn.init.xavier_normal_(layer.weights)
 
-    def reset_pruning_masks(self):
-        """
-        Creates initial pruning masks for the layers of the model. These are initialized with all ones. A pruning mask with all ones does nothing.
-        """
+        # Stores a copy of the initial weights, which are needed by the Lottery Ticket Hypothesis, because after each iteration, the weights are reset
+        # to their respective initial values
+        self.initial_weights = {}
+        self.initial_biases = {}
+        for layer in self.layers:
+            self.initial_weights[layer.name] = torch.empty_like(layer.weights).copy_(layer.weights)
+            self.initial_biases[layer.name] = torch.empty_like(layer.biases).copy_(layer.biases)
 
+        # Initializes the pruning masks of the layer, which are used for pruning as well as freezing the pruned weights during training
         self.pruning_masks = {}
         for layer in self.get_layers():
             self.pruning_masks[layer.name] = torch.ones_like(layer.weights, dtype=torch.uint8)
+
+    def get_layers(self):
+        """
+        Retrieves the layers of the model.
+
+        Returns
+        -------
+            list
+                Returns a list that contains the layers of the model.
+        """
+
+        return self.layers
 
     def get_pruning_masks(self):
         """
@@ -99,11 +124,6 @@ class BaseModel(torch.nn.Module):
                 Returns a dictionary where the key is the name of the layer and the value is torch.Tensor representing the mask.
         """
 
-        # Checks if the pruning masks are available (at the beginning they are None, because they are initialized lazily)
-        if self.pruning_masks is None:
-            self.reset_pruning_masks()
-
-        # Returns the pruning masks
         return self.pruning_masks
 
     def update_pruning_mask(self, layer_name, pruning_mask):
@@ -123,10 +143,6 @@ class BaseModel(torch.nn.Module):
                 If the layer does not exist or the new pruning mask is in the wrong format, then a ValueError is raised.
         """
 
-        # Checks if the pruning masks are available (at the beginning they are None, because they are initialized lazily)
-        if self.pruning_masks is None:
-            self.reset_pruning_masks()
-
         # Validates the arguments
         if layer_name not in self.pruning_masks:
             raise ValueError('The specified layer "{0}" does not exist.'.format(layer_name))
@@ -143,6 +159,41 @@ class BaseModel(torch.nn.Module):
 
         # Stores the new pruning mask
         self.pruning_masks[layer_name] = pruning_mask
+
+    def update_layer_weights(self, layer_name, new_weights):
+        """
+        Updates the weights of the specified layer.
+
+        Parameters
+        ----------
+            layer_name: str
+                The name of the layer whose weights are to be updated.
+            new_weights: torch.Tensor
+                The new weights of the layer.
+        """
+
+        self.state_dict()['{0}.weight'.format(layer_name)].copy_(new_weights)
+
+    def reset_model(self):
+        """Resets the model back to its initial initialization."""
+
+        for layer in self.layers:
+            self.state_dict()['{0}.weight'.format(layer.name)].copy_(self.initial_weights[layer.name])
+            self.state_dict()['{0}.bias'.format(layer.name)].copy_(self.initial_biases[layer.name])
+
+    def move_to_device(self, device):
+        """
+        Moves the model to the specified device.
+        """
+
+        # Moves the model itself to the device
+        self.to(device)
+
+        # Moves the initial weights, initial biases, and the pruning masks also to the device
+        for layer in self.layers:
+            self.initial_weights[layer.name] = self.initial_weights[layer.name].to(device)
+            self.initial_biases[layer.name] = self.initial_biases[layer.name].to(device)
+            self.pruning_masks[layer.name] = self.pruning_masks[layer.name].to(device)
 
     def forward(self, x):
         """

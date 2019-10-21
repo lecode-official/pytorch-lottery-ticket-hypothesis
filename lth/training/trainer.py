@@ -45,7 +45,7 @@ class Trainer:
             self.logger.info('Running on the CPU.')
 
         # Transfers the model to the selected device
-        self.model.to(device)
+        self.model.move_to_device(device)
 
         # Puts the model in training mode (this is important for some layers, like dropout and BatchNorm which have different bahavior during training
         # and evaluation)
