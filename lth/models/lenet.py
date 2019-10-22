@@ -7,7 +7,7 @@ from .model import BaseModel
 class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
-    # Specifies some know-to-work hyperparameters for the model
+    # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
     learning_rate = 1.2e-3
     batch_size = 60
     number_of_epochs = 50
@@ -48,11 +48,9 @@ class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
         self.number_of_input_channels = number_of_input_channels
         self.number_of_classes = number_of_classes
 
-        # Creates the layers of the architecture, the first two full-connected layers are followed by a BatchNorm layer
+        # Creates the layers of the architecture
         self.fully_connected_1 = torch.nn.Linear(self.input_size * self.number_of_input_channels, 300)
-        self.batch_norm_1 = torch.nn.BatchNorm1d(num_features=300)
         self.fully_connected_2 = torch.nn.Linear(300, 100)
-        self.batch_norm_2 = torch.nn.BatchNorm1d(num_features=100)
         self.fully_connected_3 = torch.nn.Linear(100, number_of_classes)
 
         # Initializes the model
@@ -78,10 +76,8 @@ class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
 
         # Performs the forward pass through the neural network
         x = self.fully_connected_1(x)
-        x = self.batch_norm_1(x)
         x = torch.nn.functional.relu(x)
         x = self.fully_connected_2(x)
-        x = self.batch_norm_2(x)
         x = torch.nn.functional.relu(x)
         x = self.fully_connected_3(x)
 
@@ -94,12 +90,12 @@ class LeNet5(BaseModel):
     Applied to Document Recognition.", where it was used for character recognition.
     """
 
-    # Specifies some know-to-work hyperparameters for the model
+    # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
     learning_rate = 1.2e-3
     batch_size = 60
     number_of_epochs = 50
 
-    def __init__(self, input_size=(32, 32), number_of_input_channels=1, number_of_classes=10):
+    def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
         Initializes a new LeNet5 instance.
 
@@ -107,8 +103,9 @@ class LeNet5(BaseModel):
         ----------
             input_size: tuple
                 A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical LeNet5 input size of 32x32. Be careful, this is the input size described in the original paper, but usually
-                LeNet5 is used to train on MNIST, which has an image size of 28x28 and not 32x32.
+                Defaults to the typical MNIST size of 28x28. Be careful, this is not the input size described in the original paper. The original
+                paper used an input size of 32x32, but since this model is mostly used to train on MNIST, the default should be be image size of the
+                MNIST examples, which is 28x28.
             number_of_input_channels: int
                 The number of channels that the input image has. Defaults to the typical MNIST number of channels: 1.
             number_of_classes: int
@@ -143,14 +140,11 @@ class LeNet5(BaseModel):
         self.batch_norm_2 = torch.nn.BatchNorm2d(num_features=16)
         output_size = ((output_size[0] - 4) // 2, (output_size[1] - 4) // 2)
 
-        # Adds three fully-connected layers to the end, the first two of them followed by a BatchNorm layer, the input size of the first layer will be
-        # the product of the edge lengths of the receptive field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature
-        # maps in the second convolution (in this case the number of feature maps in the second convolution is 16, so the input size, could for
-        # example be 5 * 5 * 16 = 400)
+        # Adds three fully-connected layers to the end, the input size of the first layer will be the product of the edge lengths of the receptive
+        # field of the second convolution layer (e.g. 5 * 5 = 25) multiplied by the number of feature maps in the second convolution (in this case the
+        # number of feature maps in the second convolution is 16, so the input size, could for example be 5 * 5 * 16 = 400)
         self.fully_connected_1 = torch.nn.Linear(output_size[0] * output_size[1] * 16, 120)
-        self.batch_norm_3 = torch.nn.BatchNorm1d(num_features=120)
         self.fully_connected_2 = torch.nn.Linear(120, 84)
-        self.batch_norm_4 = torch.nn.BatchNorm1d(num_features=84)
         self.fully_connected_3 = torch.nn.Linear(84, number_of_classes)
 
         # Initializes the model
@@ -188,10 +182,8 @@ class LeNet5(BaseModel):
 
         # Performs the forward pass through all fully-connected layers
         x = self.fully_connected_1(x)
-        x = self.batch_norm_3(x)
         x = torch.nn.functional.relu(x)
         x = self.fully_connected_2(x)
-        x = self.batch_norm_4(x)
         x = torch.nn.functional.relu(x)
         x = self.fully_connected_3(x)
 
