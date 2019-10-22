@@ -1,6 +1,6 @@
 """Represents the lottery ticket hypothesis application."""
 
-__version__ = '1.0'
+__version__ = '0.1.0'
 
 import os
 import sys
