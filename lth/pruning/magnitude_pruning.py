@@ -34,14 +34,15 @@ class LayerWiseMagnitudePruner:
 
         # Creates the pruning masks for each layer of the model
         self.logger.info('Generating pruning mask for model %s...', self.model.name)
-        for layer in tqdm.tqdm(self.model.get_layers(), unit='layer'):
+        for layer_name in tqdm.tqdm(self.model.get_layer_names(), unit='layer'):
 
             # Determines the pruning rate of the layer, if the pruning rate is 0.0, then no pruning is performed on the layer
-            layer_pruning_rate = self.get_layer_pruning_rate(layer)
+            layer_pruning_rate = self.model.pruning_rates[layer_name]
             if layer_pruning_rate == 0.0:
                 continue
 
             # Flattens the weights of the layer, because the sorting can only be performed for a single dimension
+            layer = self.model.get_layer(layer_name)
             weights = layer.weights.reshape(-1)
 
             # Since the weights are pruned by their magnitude, the absolute values of the weights are retrieved
@@ -63,36 +64,11 @@ class LayerWiseMagnitudePruner:
             pruning_mask[sorted_indices[:number_of_pruned_weights]] = 0
             pruning_mask[sorted_indices[number_of_pruned_weights:]] = 1
 
-            # Reshapes the pruning mask to the original shape of the weights of the layer and stores it in the model
-            pruning_mask = pruning_mask.reshape(layer.weights.shape)
-            self.model.update_pruning_mask(layer.name, pruning_mask)
+            # Reshapes the pruning mask to the original shape of the weights of the layer and stores it in the layer
+            layer.pruning_mask = pruning_mask.reshape(layer.weights.shape)
 
         # Logs out a success message
         self.logger.info('Finished generating pruning mask for model %s.', self.model.name)
-
-    def get_layer_pruning_rate(self, layer):
-        """
-        Determines the rate at which the specified layer should be pruned. For example a pruning rate of 0.2 means that 20% of the weights will be
-        pruned.
-
-        Parameters
-        ----------
-            layer: Layer
-                The layer for which the pruning rate is to be determined.
-
-        Returns
-        -------
-            float
-                Returns the pruning rate of the specified layer. A pruning rate of 0.0 means that the layer should not be pruned at all.
-        """
-
-        # A model can specify model-wide pruning rate, which is to be applied to all layers, or it can specify pruning rates based on layer type, if
-        # no pruning rate was specified for a layer kind, then it is assumed to be 0.0 (meaning that the layer should not be pruned at all)
-        if isinstance(self.model.pruning_rates, float):
-            return self.model.pruning_rates
-        if isinstance(self.model.pruning_rates, dict) and layer.kind in self.model.pruning_rates:
-            return self.model.pruning_rates[layer.king]
-        return 0.0
 
     def apply_pruning_masks(self):
         """Applies the pruning masks generated using create_pruning_masks. This is effectively the actual pruning."""
@@ -102,11 +78,11 @@ class LayerWiseMagnitudePruner:
         number_of_pruned_weights = 0
         number_of_zero_weights = 0
         self.logger.info('Applying pruning masks to the layers of the model...')
-        pruning_masks = self.model.get_pruning_masks()
-        for layer in tqdm.tqdm(self.model.get_layers(), unit='layer'):
+        for layer_name in tqdm.tqdm(self.model.get_layer_names(), unit='layer'):
+            layer = self.model.get_layer(layer_name)
             total_number_of_weights += layer.weights.numel()
-            pruned_weights = layer.weights * pruning_masks[layer.name]
-            number_of_pruned_weights += torch.sum(pruning_masks[layer.name] == 0).item()
+            pruned_weights = layer.weights * layer.pruning_mask
+            number_of_pruned_weights += torch.sum(layer.pruning_mask == 0).item()
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
             self.model.update_layer_weights(layer.name, pruned_weights)
         self.logger.info('Finished applying the pruning masks to the layers of the model.')

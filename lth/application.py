@@ -247,16 +247,16 @@ class Application:
             '--number-of-epochs',
             dest='number_of_epochs',
             type=int,
-            default=10,
-            help='The number of epochs to train for. Defaults to 10.'
+            default=50,
+            help='The number of epochs to train for. Defaults to 50.'
         )
         find_ticket_command_parser.add_argument(
             '-b',
             '--batch-size',
             dest='batch_size',
             type=int,
-            default=64,
-            help='The size of the mini-batch used during training and testing. Defaults to 64.'
+            default=60,
+            help='The size of the mini-batch used during training and testing. Defaults to 60.'
         )
         find_ticket_command_parser.add_argument(
             '-l',

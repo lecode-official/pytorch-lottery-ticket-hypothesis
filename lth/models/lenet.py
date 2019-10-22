@@ -27,7 +27,11 @@ class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
 
         # Exposes some information about the model architecture
         self.name = 'LeNet-300-100'
-        self.pruning_rates = 0.2
+        self.pruning_rates = {
+            'fully_connected_1': 0.2,
+            'fully_connected_2': 0.2,
+            'fully_connected_3': 0.1
+        }
 
         # Stores the arguments for later use
         if isinstance(input_size, tuple):
@@ -108,8 +112,11 @@ class LeNet5(BaseModel):
         # Exposes some information about the model architecture
         self.name = 'LeNet5'
         self.pruning_rates = {
-            LayerKind.fully_connected: 0.2,
-            LayerKind.convolution_2d: 0.1
+            'convolution_1': 0.1,
+            'convolution_2': 0.1,
+            'fully_connected_1': 0.2,
+            'fully_connected_2': 0.2,
+            'fully_connected_3': 0.1
         }
 
         # Adds the first convolution layer followed by a BatchNorm layer, since the convolution layer has a kernel size of 5x5, the receptive field

@@ -77,8 +77,9 @@ class Trainer:
 
                 # Computes the gradients and applies the pruning mask to it, this makes sure that all pruned weights are frozen and do not get updated
                 loss.backward()
-                for layer in self.model.get_layers():
-                    layer.weights.grad *= self.model.get_pruning_masks()[layer.name]
+                for layer_name in self.model.get_layer_names():
+                    layer = self.model.get_layer(layer_name)
+                    layer.weights.grad *= layer.pruning_mask
                 optimizer.step()
                 cumulative_loss += loss.item()
 
