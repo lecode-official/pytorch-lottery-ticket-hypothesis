@@ -17,7 +17,7 @@ This algorithm is usually performed iteratively by repeatedly training the model
 
 Morcos et al. show in their paper "One ticket to win them all: generalizing lottery ticket initializations across datasets and optimizers" that winning tickets are not actually overfit to the dataset or optimizer. They generate tickets using one dataset/optimizer and then successfully train them on other datasets/optimizers.
 
-Zhou et al. explore winning tickets in-depth and extended the algorithm to adapt it to different methods of producing masks (mask criterion) and different actions on weights whose mask value is 0 or 1. Their proposed algorithm works as follows:
+Zhou et al. explore winning tickets in-depth and extended the algorithm to adapt it to different methods of producing masks (mask criterion) and different actions on weights whose mask value is 0 or 1 (mask-0 action and mask-1 action respectively). They use this extension to analyze winning tickets and their creation. Their proposed algorithm works as follows:
 
 1. Initialize a mask $`m`$ to all ones. Randomly initialize the parameters $`w`$ of a network $`f(x;w \odot m)`$.
 1. Train the parameters $`w`$ of the network $`f(x;w \odot m)`$ to completion. Denote the initial weights before training $`w_i`$ and the final weights after training $`w_f`$.
@@ -27,3 +27,32 @@ Zhou et al. explore winning tickets in-depth and extended the algorithm to adapt
 1. Repeat from 1 if performing iterative pruning.
 
 The code base in this repository should serve as the basis to perform further research into why and how these winning tickets work.
+
+## Usage
+
+The project has several dependencies, e.g. PyTorch, that can conveniently be installed using Anaconda. The repository contains a ready-made Anaconda environment which can be installed like this:
+
+```bash
+conda env create -f environment.yml
+```
+
+Before using the project, the environment has to be activated:
+
+```bash
+conda activate lottery-ticket-hypothesis
+# Use the lth Python module
+conda deactivate # After finishing, the original environment can be restored
+```
+
+The project consists of a single Python module called `lth`, which offers commands for performing experiments. Finding a winning ticket for a model and a dataset can be done using the `find-ticket` command. For example, the following command performs 20 iterations of the Lottery Ticket algorithm on LeNet-300-100 and MNIST, where each training step consists of 50 epochs:
+
+```bash
+python -m lth find-ticket lenet-300-100 mnist ./datasets
+```
+
+Detailed information about all the commands as well as their parameters can be found using the `--help` flag:
+
+```bash
+python -m lth --help # For general information about the application as well as a list of available commands
+python -m lth <command-name> --help # For information about the specified command
+```
