@@ -13,7 +13,11 @@ The original algorithm proposed by Frankle et al. works as follows:
 1. Prune $`p\%`$ of the parameters in $`\Theta_j`$, creating a mask $`m`$.
 1. Reset the remaining parameters to their values in $`\Theta_0`$, creating the winning ticket $`f(x;m \odot \Theta_0)`$ ($`\odot`$ being the Hadamard, or element-wise, product).
 
-This algorithm is usually performed iteratively by repeatedly train, prune a small percentage of weights (e.g. 20%), and reset the remaining weights. Zhou et al. extended the algorithm as follows:
+This algorithm is usually performed iteratively by repeatedly training the model, pruning a small percentage of the weights (e.g. 20%), resetting the remaining weights, and training the pruned and reset model again. This algorithm can produce winning tickets for small model architectures on small datasets but fails to produce winning tickets for larger model architectures and datasets without lowering the learning rate and using learning rate warmup. In a follow-up paper, Frankle et al. extend the Lottery Ticket Hypothesis and its algorithm to rewind the weights to an iteration early in the training instead of resetting them to their initial weights, thus stabilizing the algorithm for larger model architectures and datasets.
+
+Morcos et al. show in their paper "One ticket to win them all: generalizing lottery ticket initializations across datasets and optimizers" that winning tickets are not actually overfit to the dataset or optimizer. They generate tickets using one dataset/optimizer and then successfully train them on other datasets/optimizers.
+
+Zhou et al. explore winning tickets in-depth and extended the algorithm to adapt it to different methods of producing masks (mask criterion) and different actions on weights whose mask value is 0 or 1. Their proposed algorithm works as follows:
 
 1. Initialize a mask $`m`$ to all ones. Randomly initialize the parameters $`w`$ of a network $`f(x;w \odot m)`$.
 1. Train the parameters $`w`$ of the network $`f(x;w \odot m)`$ to completion. Denote the initial weights before training $`w_i`$ and the final weights after training $`w_f`$.
