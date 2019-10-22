@@ -25,12 +25,6 @@ class LayerWiseMagnitudePruner:
         self.model = model
         self.logger = logging.getLogger('lth.pruning.magnitude_pruning.LayerWiseMagnitudePruner')
 
-    def prune(self):
-        """Generates the pruning masks for the model and prunes it."""
-
-        self.create_pruning_masks()
-        self.apply_pruning_masks()
-
     def create_pruning_masks(self):
         """
         Generates the pruning masks for all layers of the model. The pruning is not performed in-place on the layers of the model itself but a pruning

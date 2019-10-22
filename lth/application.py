@@ -80,8 +80,7 @@ class Application:
         for _ in range(self.number_of_iterations):
             trainer.train(self.learning_rate, self.number_of_epochs)
             evaluator.evaluate()
-            pruner.prune()
-            evaluator.evaluate()
+            pruner.create_pruning_masks()
             model.reset()
             pruner.apply_pruning_masks()
 
@@ -248,8 +247,8 @@ class Application:
             '--number-of-epochs',
             dest='number_of_epochs',
             type=int,
-            default=5,
-            help='The number of epochs to train for. Defaults to 5.'
+            default=10,
+            help='The number of epochs to train for. Defaults to 10.'
         )
         find_ticket_command_parser.add_argument(
             '-b',
