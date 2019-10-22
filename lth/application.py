@@ -73,11 +73,13 @@ class Application:
         pruner = LayerWiseMagnitudePruner(model)
 
         # Creates the lottery ticket by repeatedly training and pruning the model
-        for _ in range(10):
+        for _ in range(20):
             trainer.train(self.learning_rate, self.number_of_epochs)
             evaluator.evaluate()
             pruner.prune()
             evaluator.evaluate()
+            model.reset()
+            pruner.apply_pruning_masks()
 
     def parse_command_line_arguments(self):
         """Parses the command line arguments of the application."""

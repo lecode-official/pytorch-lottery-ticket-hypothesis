@@ -174,7 +174,7 @@ class BaseModel(torch.nn.Module):
 
         self.state_dict()['{0}.weight'.format(layer_name)].copy_(new_weights)
 
-    def reset_model(self):
+    def reset(self):
         """Resets the model back to its initial initialization."""
 
         for layer in self.layers:
