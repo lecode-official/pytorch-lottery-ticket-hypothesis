@@ -29,6 +29,7 @@ class Application:
         self.model = None
         self.dataset = None
         self.dataset_path = None
+        self.number_of_iterations = None
         self.number_of_epochs = None
         self.batch_size = None
         self.learning_rate = None
@@ -40,15 +41,18 @@ class Application:
         self.parse_command_line_arguments()
 
         # Checks which command the user wants to execute and executes it accordingly
-        if self.command == 'train':
-            self.train()
+        if self.command == 'find-ticket':
+            self.find_ticket()
         else:
             self.logger.error('No command specified, exiting.')
 
-    def train(self):
-        """Trains the LeNet5 model on the MNIST dataset."""
+    def find_ticket(self):
+        """
+        Performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket Hypothesis: Finding Sparse, Trainable
+        Neural Networks".
+        """
 
-        # Loads the training and the test split of the MNIST dataset
+        # Loads the training and the test split of the dataset
         if self.dataset == 'mnist':
             dataset = Mnist(self.dataset_path, self.batch_size)
         elif self.dataset == 'cifar10':
@@ -73,7 +77,7 @@ class Application:
         pruner = LayerWiseMagnitudePruner(model)
 
         # Creates the lottery ticket by repeatedly training and pruning the model
-        for _ in range(20):
+        for _ in range(self.number_of_iterations):
             trainer.train(self.learning_rate, self.number_of_epochs)
             evaluator.evaluate()
             pruner.prune()
@@ -147,15 +151,16 @@ class Application:
 
         # Adds the commands
         sub_parsers = argument_parser.add_subparsers(dest='command')
-        Application.add_training_command(sub_parsers)
+        Application.add_find_ticket_command(sub_parsers)
 
         # Parses the arguments
         arguments = argument_parser.parse_args()
         self.command = arguments.command
-        if self.command == 'train':
+        if self.command == 'find-ticket':
             self.model = arguments.model
             self.dataset = arguments.dataset
             self.dataset_path = arguments.dataset_path
+            self.number_of_iterations = arguments.number_of_iterations
             self.number_of_epochs = arguments.number_of_epochs
             self.batch_size = arguments.batch_size
             self.learning_rate = arguments.learning_rate
@@ -193,9 +198,10 @@ class Application:
             self.logger.addHandler(file_logging_handler)
 
     @staticmethod
-    def add_training_command(sub_parsers):
+    def add_find_ticket_command(sub_parsers):
         """
-        Adds the training command, which trains a neural network.
+        Adds the find-ticket command, which performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket
+        Hypothesis: Finding Sparse, Trainable Neural Networks".
 
         Parameters
         ----------
@@ -203,48 +209,61 @@ class Application:
                 The sub parsers to which the command is to be added.
         """
 
-        train_command_parser = sub_parsers.add_parser(
-            'train',
-            help='Trains the LeNet5 neural network on the MNIST dataset.'
+        find_ticket_command_parser = sub_parsers.add_parser(
+            'find-ticket',
+            help='''
+                Performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket Hypothesis: Finding Sparse,
+                Trainable Neural Networks". This algorithm repeatedly trains, prunes, and then retrains a neural network model. After each training
+                and pruning cycle, the remaining weights of the neural network are reset to their initial initialization. This results in a sparse
+                neural network, which is still trainable from scratch.
+            '''
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
             'model',
             type=str,
             choices=['lenet5', 'lenet-300-100'],
-            help='The name of the model that is to be trained.'
+            help='The name of the model for which a lottery ticket is to be found.'
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
             'dataset',
             type=str,
             choices=['mnist', 'cifar10'],
             help='The name of the dataset on which the model is to be trained.'
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
             'dataset_path',
             type=str,
-            help='The path to the MNIST dataset. If it does not exist it is automatically downloaded and stored at the specified location.'
+            help='The path to the dataset. If it does not exist it is automatically downloaded and stored at the specified location.'
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
+            '-i',
+            '--number-of-iterations',
+            dest='number_of_iterations',
+            type=int,
+            default=20,
+            help='The number of train-prune-cycles that are to be performed. Defaults to 20, which yields a sparsity of approximately 99%.'
+        )
+        find_ticket_command_parser.add_argument(
             '-e',
             '--number-of-epochs',
             dest='number_of_epochs',
             type=int,
-            default=10,
-            help='The number of epochs to train for. Defaults to 10.'
+            default=5,
+            help='The number of epochs to train for. Defaults to 5.'
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
             '-b',
             '--batch-size',
             dest='batch_size',
             type=int,
-            default=32,
-            help='The size of the mini-batch used during training and testing. Defaults to 32.'
+            default=64,
+            help='The size of the mini-batch used during training and testing. Defaults to 64.'
         )
-        train_command_parser.add_argument(
+        find_ticket_command_parser.add_argument(
             '-l',
             '--learning-rate',
             dest='learning_rate',
             type=float,
-            default=0.001,
-            help='The learning rate used in the training of the model. Defaults to 0.001.'
+            default=0.0012,
+            help='The learning rate used in the training of the model. Defaults to 0.0012.'
         )
