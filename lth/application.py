@@ -11,6 +11,7 @@ import functools
 
 import tqdm
 
+from .models.vgg import Vgg2
 from .datasets.mnist import Mnist
 from .datasets.cifar import Cifar10
 from .training.trainer import Trainer
@@ -62,6 +63,10 @@ class Application:
             learning_rate = self.learning_rate if self.learning_rate is not None else LeNet_300_100.learning_rate
             batch_size = self.batch_size if self.batch_size is not None else LeNet_300_100.batch_size
             number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else LeNet_300_100.number_of_epochs
+        elif self.model == 'vgg2':
+            learning_rate = self.learning_rate if self.learning_rate is not None else Vgg2.learning_rate
+            batch_size = self.batch_size if self.batch_size is not None else Vgg2.batch_size
+            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else Vgg2.number_of_epochs
         else:
             raise ValueError('Unknown model: {0}.'.format(self.dataset))
 
@@ -78,6 +83,8 @@ class Application:
             model = LeNet5(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
         elif self.model == 'lenet-300-100':
             model = LeNet_300_100(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
+        elif self.model == 'vgg2':
+            model = Vgg2(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
 
         # Logs out the model and dataset that is being trained on
         self.logger.info(
@@ -238,7 +245,7 @@ class Application:
         find_ticket_command_parser.add_argument(
             'model',
             type=str,
-            choices=['lenet5', 'lenet-300-100'],
+            choices=['lenet5', 'lenet-300-100', 'vgg2'],
             help='The name of the model for which a lottery ticket is to be found.'
         )
         find_ticket_command_parser.add_argument(
