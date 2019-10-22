@@ -56,7 +56,7 @@ class Vgg2(BaseModel):
         # Adds the second convolution layer followed by a BatchNorm layer, after the second convolution, a max pooling is applied with a filter size
         # of 2x2, therefore, the receptive field shrinks by a factor of 0.5, since the kernel size is 3x3 and the padding is 1, the edge length of the
         # output after the second convolution is halved, e.g. (32, 32, 64) -> (16, 16, 64)
-        self.convolution_2 = torch.nn.Conv2d(64, 64, kernel_size=3)
+        self.convolution_2 = torch.nn.Conv2d(64, 64, kernel_size=3, padding=1)
         self.batch_norm_2 = torch.nn.BatchNorm2d(num_features=64)
 
         # Adds three fully-connected layers to the end, the input size of the first layer will be the product of the edge lengths of the receptive
