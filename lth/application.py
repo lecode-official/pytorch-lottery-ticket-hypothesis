@@ -52,11 +52,24 @@ class Application:
         Neural Networks".
         """
 
+        # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model-specific values that
+        # are known to work well
+        if self.model == 'lenet5':
+            learning_rate = self.learning_rate if self.learning_rate is not None else LeNet5.learning_rate
+            batch_size = self.batch_size if self.batch_size is not None else LeNet5.batch_size
+            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else LeNet5.number_of_epochs
+        elif self.model == 'lenet-300-100':
+            learning_rate = self.learning_rate if self.learning_rate is not None else LeNet_300_100.learning_rate
+            batch_size = self.batch_size if self.batch_size is not None else LeNet_300_100.batch_size
+            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else LeNet_300_100.number_of_epochs
+        else:
+            raise ValueError('Unknown model: {0}.'.format(self.dataset))
+
         # Loads the training and the test split of the dataset
         if self.dataset == 'mnist':
-            dataset = Mnist(self.dataset_path, self.batch_size)
+            dataset = Mnist(self.dataset_path, batch_size)
         elif self.dataset == 'cifar10':
-            dataset = Cifar10(self.dataset_path, self.batch_size)
+            dataset = Cifar10(self.dataset_path, batch_size)
         else:
             raise ValueError('Unknown dataset: {0}.'.format(self.dataset))
 
@@ -65,11 +78,16 @@ class Application:
             model = LeNet5(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
         elif self.model == 'lenet-300-100':
             model = LeNet_300_100(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
-        else:
-            raise ValueError('Unknown model: {0}.'.format(self.dataset))
 
         # Logs out the model and dataset that is being trained on
-        self.logger.info('Training %s on %s.', model.name, dataset.name)
+        self.logger.info(
+            'Training %s on %s. Learning rate: %f, batch size: %d, number of epochs: %d',
+            model.name,
+            dataset.name,
+            learning_rate,
+            batch_size,
+            number_of_epochs
+        )
 
         # Creates the trainer, the evaluator, and the pruner for the lottery ticket creation
         trainer = Trainer(model, dataset)
@@ -78,7 +96,7 @@ class Application:
 
         # Creates the lottery ticket by repeatedly training and pruning the model
         for _ in range(self.number_of_iterations):
-            trainer.train(self.learning_rate, self.number_of_epochs)
+            trainer.train(learning_rate, number_of_epochs)
             evaluator.evaluate()
             pruner.create_pruning_masks()
             model.reset()
@@ -240,29 +258,38 @@ class Application:
             dest='number_of_iterations',
             type=int,
             default=20,
-            help='The number of train-prune-cycles that are to be performed. Defaults to 20, which yields a sparsity of approximately 99%.'
+            help='The number of train-prune-cycles that are to be performed. Defaults to 20.'
         )
         find_ticket_command_parser.add_argument(
             '-e',
             '--number-of-epochs',
             dest='number_of_epochs',
             type=int,
-            default=50,
-            help='The number of epochs to train for. Defaults to 50.'
+            default=None,
+            help='''
+                The number of epochs to train the neural network model for. If not specified, then it defaults to a model-specific value that is known
+                to work well.
+            '''
         )
         find_ticket_command_parser.add_argument(
             '-b',
             '--batch-size',
             dest='batch_size',
             type=int,
-            default=60,
-            help='The size of the mini-batch used during training and testing. Defaults to 60.'
+            default=None,
+            help='''
+                The size of the mini-batch used during training and testing. If not specified, then it defaults to a model-specific value that is
+                known to work well.
+            '''
         )
         find_ticket_command_parser.add_argument(
             '-l',
             '--learning-rate',
             dest='learning_rate',
             type=float,
-            default=0.0012,
-            help='The learning rate used in the training of the model. Defaults to 0.0012.'
+            default=None,
+            help='''
+                The learning rate used in the training of the model. If not specified, then it defaults to a model-specific value that is known to
+                work well.
+            '''
         )

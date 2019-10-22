@@ -1,11 +1,16 @@
-"""Represents a module that contains the multiple neural network models based on the LeNet family of architectures."""
+"""Represents a module that contains the multiple neural network models based on the LeNet family of architectures first introduced by Yann LeCun."""
 
 import torch
 
-from .model import BaseModel, LayerKind
+from .model import BaseModel
 
 class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
+
+    # Specifies some know-to-work hyperparameters for the model
+    learning_rate = 1.2e-3
+    batch_size = 60
+    number_of_epochs = 50
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
@@ -88,6 +93,11 @@ class LeNet5(BaseModel):
     Represents the classical convolutional neural network architecture LeNet5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
     Applied to Document Recognition.", where it was used for character recognition.
     """
+
+    # Specifies some know-to-work hyperparameters for the model
+    learning_rate = 1.2e-3
+    batch_size = 60
+    number_of_epochs = 50
 
     def __init__(self, input_size=(32, 32), number_of_input_channels=1, number_of_classes=10):
         """
