@@ -1,10 +1,10 @@
-"""Represents a module containing datasets from the Cifar family of datasets."""
+"""Represents a module containing datasets from the CIFAR family of datasets."""
 
 import torch
 import torchvision
 
 class Cifar10:
-    """Represents the Cifar10 dataset."""
+    """Represents the CIFAR-10 dataset."""
 
     def __init__(self, path, batch_size):
         """
@@ -13,7 +13,7 @@ class Cifar10:
         Parameters
         ----------
             path: str
-                The path were the Cifar10 dataset is stored. If the dataset could not be found, then it is automatically downloaded to the specified
+                The path were the CIFAR-10 dataset is stored. If the dataset could not be found, then it is automatically downloaded to the specified
                 location.
             batch_size: int
                 The number of samples that are to be batched together.
@@ -24,7 +24,7 @@ class Cifar10:
         self.batch_size = batch_size
 
         # Exposes some information about the dataset
-        self.name = 'Cifar10'
+        self.name = 'CIFAR-10'
         self.sample_shape = (32, 32, 3)
         self.number_of_classes = 10
 
