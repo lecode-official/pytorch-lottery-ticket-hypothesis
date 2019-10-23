@@ -54,16 +54,13 @@ class Application:
 
         # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
         # values that are known to work well
-        learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(self.model, self.dataset)
-        learning_rate = self.learning_rate if self.learning_rate is not None else learning_rate
-        batch_size = self.batch_size if self.batch_size is not None else batch_size
-        number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else number_of_epochs
-        if learning_rate is None:
-            raise ValueError('No learning rate was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
-        if batch_size is None:
-            raise ValueError('No batch size was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
-        if number_of_epochs is None:
-            raise ValueError('No number of epochs was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
+        learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(
+            self.model,
+            self.dataset,
+            self.learning_rate,
+            self.batch_size,
+            self.number_of_epochs
+        )
 
         # Loads the training and the test split of the dataset and creates the model
         dataset = create_dataset(self.dataset, self.dataset_path, batch_size)
