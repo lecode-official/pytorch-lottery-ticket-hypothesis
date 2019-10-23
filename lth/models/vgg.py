@@ -6,12 +6,15 @@ Group (VGG).
 
 import torch
 
-from .model import BaseModel
+from . import BaseModel
 
 class Vgg2(BaseModel):
     """
     Represents a very small VGG-variant with only two convolution layers. In the original paper by Frankle et al., this is referred to as Conv-2.
     """
+
+    # Specifies the ID by which the model can be identified
+    model_id = 'vgg2'
 
     # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
     learning_rate = 2e-4

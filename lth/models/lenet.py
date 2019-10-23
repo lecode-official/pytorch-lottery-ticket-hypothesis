@@ -2,10 +2,13 @@
 
 import torch
 
-from .model import BaseModel
+from . import BaseModel
 
 class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
+
+    # Specifies the ID by which the model can be identified
+    model_id = 'lenet-300-100'
 
     # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
     learning_rate = 1.2e-3
@@ -89,6 +92,9 @@ class LeNet5(BaseModel):
     Represents the classical convolutional neural network architecture LeNet5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
     Applied to Document Recognition.", where it was used for character recognition.
     """
+
+    # Specifies the ID by which the model can be identified
+    model_id = 'lenet5'
 
     # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
     learning_rate = 1.2e-3

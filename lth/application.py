@@ -12,8 +12,8 @@ import functools
 import tqdm
 
 from .models.vgg import Vgg2
-from .datasets.mnist import Mnist
-from .datasets.cifar import Cifar10
+from .models import create_model
+from .datasets import create_dataset
 from .training.trainer import Trainer
 from .training.evaluator import Evaluator
 from .models.lenet import LeNet_300_100, LeNet5
@@ -70,21 +70,9 @@ class Application:
         else:
             raise ValueError('Unknown model: {0}.'.format(self.dataset))
 
-        # Loads the training and the test split of the dataset
-        if self.dataset == 'mnist':
-            dataset = Mnist(self.dataset_path, batch_size)
-        elif self.dataset == 'cifar10':
-            dataset = Cifar10(self.dataset_path, batch_size)
-        else:
-            raise ValueError('Unknown dataset: {0}.'.format(self.dataset))
-
-        # Creates the model
-        if self.model == 'lenet5':
-            model = LeNet5(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
-        elif self.model == 'lenet-300-100':
-            model = LeNet_300_100(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
-        elif self.model == 'vgg2':
-            model = Vgg2(dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
+        # Loads the training and the test split of the dataset and creates the model
+        dataset = create_dataset(self.dataset, self.dataset_path, batch_size)
+        model = create_model(self.model, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
 
         # Logs out the model and dataset that is being trained on
         self.logger.info(

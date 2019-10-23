@@ -39,6 +39,7 @@
         "datasets",
         "dtype",
         "functools",
+        "isclass",
         "isdir",
         "lenet",
         "mathcal",
