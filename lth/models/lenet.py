@@ -10,11 +10,6 @@ class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     # Specifies the ID by which the model can be identified
     model_id = 'lenet-300-100'
 
-    # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
-    learning_rate = 1.2e-3
-    batch_size = 60
-    number_of_epochs = 50
-
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
         Initializes a new LeNet5 instance.
@@ -95,11 +90,6 @@ class LeNet5(BaseModel):
 
     # Specifies the ID by which the model can be identified
     model_id = 'lenet5'
-
-    # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
-    learning_rate = 1.2e-3
-    batch_size = 60
-    number_of_epochs = 50
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """

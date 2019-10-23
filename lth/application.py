@@ -11,12 +11,11 @@ import functools
 
 import tqdm
 
-from .models.vgg import Vgg2
 from .models import create_model
+from .models import hyperparameters
 from .datasets import create_dataset
 from .training.trainer import Trainer
 from .training.evaluator import Evaluator
-from .models.lenet import LeNet_300_100, LeNet5
 from .pruning.magnitude_pruning import LayerWiseMagnitudePruner
 
 class Application:
@@ -53,22 +52,18 @@ class Application:
         Neural Networks".
         """
 
-        # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model-specific values that
-        # are known to work well
-        if self.model == 'lenet5':
-            learning_rate = self.learning_rate if self.learning_rate is not None else LeNet5.learning_rate
-            batch_size = self.batch_size if self.batch_size is not None else LeNet5.batch_size
-            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else LeNet5.number_of_epochs
-        elif self.model == 'lenet-300-100':
-            learning_rate = self.learning_rate if self.learning_rate is not None else LeNet_300_100.learning_rate
-            batch_size = self.batch_size if self.batch_size is not None else LeNet_300_100.batch_size
-            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else LeNet_300_100.number_of_epochs
-        elif self.model == 'vgg2':
-            learning_rate = self.learning_rate if self.learning_rate is not None else Vgg2.learning_rate
-            batch_size = self.batch_size if self.batch_size is not None else Vgg2.batch_size
-            number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else Vgg2.number_of_epochs
-        else:
-            raise ValueError('Unknown model: {0}.'.format(self.dataset))
+        # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
+        # values that are known to work well
+        learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(self.model, self.dataset)
+        learning_rate = self.learning_rate if self.learning_rate is not None else learning_rate
+        batch_size = self.batch_size if self.batch_size is not None else batch_size
+        number_of_epochs = self.number_of_epochs if self.number_of_epochs is not None else number_of_epochs
+        if learning_rate is None:
+            raise ValueError('No learning rate was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
+        if batch_size is None:
+            raise ValueError('No batch size was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
+        if number_of_epochs is None:
+            raise ValueError('No number of epochs was specified and there are no defaults for training {0} on {1}.'.format(self.model, self.dataset))
 
         # Loads the training and the test split of the dataset and creates the model
         dataset = create_dataset(self.dataset, self.dataset_path, batch_size)

@@ -16,11 +16,6 @@ class Vgg2(BaseModel):
     # Specifies the ID by which the model can be identified
     model_id = 'vgg2'
 
-    # Specifies some known-to-work hyperparameters for the model (these are the same hyperparameters used by Frankle et al. in their original paper)
-    learning_rate = 2e-4
-    batch_size = 60
-    number_of_epochs = 20
-
     def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
         """
         Initializes a new Vgg2 instance.
