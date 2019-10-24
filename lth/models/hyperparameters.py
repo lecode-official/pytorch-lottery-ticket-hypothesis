@@ -38,6 +38,10 @@ def get_defaults(model_name, dataset_name, learning_rate, batch_size, number_of_
         default_learning_rate, default_batch_size, default_number_of_epochs = 1.2e-3, 60, 50
     elif model_name == 'vgg2' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 2e-4, 60, 20
+    elif model_name == 'vgg4' and dataset_name == 'cifar10':
+        default_learning_rate, default_batch_size, default_number_of_epochs = 3e-4, 60, 25
+    elif model_name == 'vgg6' and dataset_name == 'cifar10':
+        default_learning_rate, default_batch_size, default_number_of_epochs = 3e-4, 60, 30
 
     learning_rate = learning_rate if learning_rate is not None else default_learning_rate
     batch_size = batch_size if batch_size is not None else default_batch_size
