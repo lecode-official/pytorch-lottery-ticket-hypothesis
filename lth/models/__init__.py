@@ -7,6 +7,14 @@ from enum import Enum
 
 import torch
 
+def model_id(new_id):
+    """A decorator, which adds a model ID to a model class."""
+
+    def decorator(model_class):
+        model_class.model_id = new_id
+        return model_class
+    return decorator
+
 class LayerKind(Enum):
     """Represents an enumeration, which contains values for the different type of layers in a neural network."""
 

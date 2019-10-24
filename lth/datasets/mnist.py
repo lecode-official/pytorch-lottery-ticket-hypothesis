@@ -3,13 +3,12 @@
 import torch
 import torchvision
 
+from . import dataset_id
 from . import BaseDataset
 
+@dataset_id('mnist')
 class Mnist(BaseDataset):
     """Represents the classical MNIST dataset."""
-
-    # Specifies the ID by which the dataset can be identified
-    dataset_id = 'mnist'
 
     def __init__(self, path, batch_size):
         """

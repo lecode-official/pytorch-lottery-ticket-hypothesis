@@ -4,6 +4,14 @@ import os
 import glob
 import inspect
 
+def dataset_id(new_id):
+    """A decorator, which adds a dataset ID to a dataset class."""
+
+    def decorator(dataset_class):
+        dataset_class.dataset_id = new_id
+        return dataset_class
+    return decorator
+
 class BaseDataset:
     """Represents the base class for all datasets."""
 

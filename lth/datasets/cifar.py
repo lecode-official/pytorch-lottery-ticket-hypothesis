@@ -3,13 +3,12 @@
 import torch
 import torchvision
 
+from . import dataset_id
 from . import BaseDataset
 
+@dataset_id('cifar10')
 class Cifar10(BaseDataset):
     """Represents the CIFAR-10 dataset."""
-
-    # Specifies the ID by which the dataset can be identified
-    dataset_id = 'cifar10'
 
     def __init__(self, path, batch_size):
         """

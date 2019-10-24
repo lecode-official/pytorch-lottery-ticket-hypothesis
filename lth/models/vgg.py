@@ -6,15 +6,14 @@ Group (VGG).
 
 import torch
 
+from . import model_id
 from . import BaseModel
 
+@model_id('vgg2')
 class Vgg2(BaseModel):
     """
     Represents a very small VGG-variant with only two convolution layers. In the original paper by Frankle et al., this is referred to as Conv-2.
     """
-
-    # Specifies the ID by which the model can be identified
-    model_id = 'vgg2'
 
     def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
         """

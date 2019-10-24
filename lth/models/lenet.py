@@ -2,13 +2,12 @@
 
 import torch
 
+from . import model_id
 from . import BaseModel
 
+@model_id('lenet-300-100')
 class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
-
-    # Specifies the ID by which the model can be identified
-    model_id = 'lenet-300-100'
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
@@ -82,14 +81,12 @@ class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
         # Returns the result
         return x
 
+@model_id('lenet5')
 class LeNet5(BaseModel):
     """
     Represents the classical convolutional neural network architecture LeNet5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
     Applied to Document Recognition.", where it was used for character recognition.
     """
-
-    # Specifies the ID by which the model can be identified
-    model_id = 'lenet5'
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
