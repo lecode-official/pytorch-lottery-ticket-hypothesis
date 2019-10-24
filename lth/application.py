@@ -11,12 +11,7 @@ import functools
 
 import tqdm
 
-from .models import create_model
-from .models import hyperparameters
-from .datasets import create_dataset
-from .training.trainer import Trainer
-from .training.evaluator import Evaluator
-from .pruning.magnitude_pruning import LayerWiseMagnitudePruner
+from .commands import get_commands
 
 class Application:
     """Represents the lottery ticket hypothesis application."""
@@ -25,69 +20,18 @@ class Application:
         """Initializes a new Application instance."""
 
         self.logger = None
-        self.command = None
-        self.model = None
-        self.dataset = None
-        self.dataset_path = None
-        self.number_of_iterations = None
-        self.number_of_epochs = None
-        self.batch_size = None
-        self.learning_rate = None
+        self.commands = None
 
     def run(self):
         """Runs the application. This is the actual entry-point to the application."""
 
         # Parses the command line arguments of the application
-        self.parse_command_line_arguments()
+        arguments = self.parse_command_line_arguments()
 
-        # Checks which command the user wants to execute and executes it accordingly
-        if self.command == 'find-ticket':
-            self.find_ticket()
-        else:
-            self.logger.error('No command specified, exiting.')
-
-    def find_ticket(self):
-        """
-        Performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket Hypothesis: Finding Sparse, Trainable
-        Neural Networks".
-        """
-
-        # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
-        # values that are known to work well
-        learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(
-            self.model,
-            self.dataset,
-            self.learning_rate,
-            self.batch_size,
-            self.number_of_epochs
-        )
-
-        # Loads the training and the test split of the dataset and creates the model
-        dataset = create_dataset(self.dataset, self.dataset_path, batch_size)
-        model = create_model(self.model, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
-
-        # Logs out the model and dataset that is being trained on
-        self.logger.info(
-            'Training %s on %s. Learning rate: %f, batch size: %d, number of epochs: %d',
-            model.name,
-            dataset.name,
-            learning_rate,
-            batch_size,
-            number_of_epochs
-        )
-
-        # Creates the trainer, the evaluator, and the pruner for the lottery ticket creation
-        trainer = Trainer(model, dataset)
-        evaluator = Evaluator(model, dataset)
-        pruner = LayerWiseMagnitudePruner(model)
-
-        # Creates the lottery ticket by repeatedly training and pruning the model
-        for _ in range(self.number_of_iterations):
-            trainer.train(learning_rate, number_of_epochs)
-            evaluator.evaluate()
-            pruner.create_pruning_masks()
-            model.reset()
-            pruner.apply_pruning_masks()
+        # Finds the command that is to be run
+        for command in self.commands:
+            if command.name == arguments.command:
+                command.run(arguments)
 
     def parse_command_line_arguments(self):
         """Parses the command line arguments of the application."""
@@ -154,20 +98,17 @@ class Application:
         )
 
         # Adds the commands
+        self.commands = []
+        command_classes = get_commands()
         sub_parsers = argument_parser.add_subparsers(dest='command')
-        Application.add_find_ticket_command(sub_parsers)
+        for command_class in command_classes:
+            command = command_class()
+            command_parser = sub_parsers.add_parser(command.name, help=command.description)
+            command.add_arguments(command_parser)
+            self.commands.append(command)
 
         # Parses the arguments
         arguments = argument_parser.parse_args()
-        self.command = arguments.command
-        if self.command == 'find-ticket':
-            self.model = arguments.model
-            self.dataset = arguments.dataset
-            self.dataset_path = arguments.dataset_path
-            self.number_of_iterations = arguments.number_of_iterations
-            self.number_of_epochs = arguments.number_of_epochs
-            self.batch_size = arguments.batch_size
-            self.learning_rate = arguments.learning_rate
 
         # Disables the rendering of the progress bar across the whole application, it would be very annoying to check for this everytime, luckily,
         # tqdm has a disable flag, which is globally overwritten using functools (the partial function returns a new function, which internally calls
@@ -201,82 +142,5 @@ class Application:
             file_logging_handler.setFormatter(logging_formatter)
             self.logger.addHandler(file_logging_handler)
 
-    @staticmethod
-    def add_find_ticket_command(sub_parsers):
-        """
-        Adds the find-ticket command, which performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket
-        Hypothesis: Finding Sparse, Trainable Neural Networks".
-
-        Parameters
-        ----------
-            sub_parsers: Action
-                The sub parsers to which the command is to be added.
-        """
-
-        find_ticket_command_parser = sub_parsers.add_parser(
-            'find-ticket',
-            help='''
-                Performs the Lottery Ticket Algorithm with resetting described by Frankle et al. in "The Lottery Ticket Hypothesis: Finding Sparse,
-                Trainable Neural Networks". This algorithm repeatedly trains, prunes, and then retrains a neural network model. After each training
-                and pruning cycle, the remaining weights of the neural network are reset to their initial initialization. This results in a sparse
-                neural network, which is still trainable from scratch.
-            '''
-        )
-        find_ticket_command_parser.add_argument(
-            'model',
-            type=str,
-            choices=['lenet5', 'lenet-300-100', 'vgg2'],
-            help='The name of the model for which a lottery ticket is to be found.'
-        )
-        find_ticket_command_parser.add_argument(
-            'dataset',
-            type=str,
-            choices=['mnist', 'cifar10'],
-            help='The name of the dataset on which the model is to be trained.'
-        )
-        find_ticket_command_parser.add_argument(
-            'dataset_path',
-            type=str,
-            help='The path to the dataset. If it does not exist it is automatically downloaded and stored at the specified location.'
-        )
-        find_ticket_command_parser.add_argument(
-            '-i',
-            '--number-of-iterations',
-            dest='number_of_iterations',
-            type=int,
-            default=20,
-            help='The number of train-prune-cycles that are to be performed. Defaults to 20.'
-        )
-        find_ticket_command_parser.add_argument(
-            '-e',
-            '--number-of-epochs',
-            dest='number_of_epochs',
-            type=int,
-            default=None,
-            help='''
-                The number of epochs to train the neural network model for. If not specified, then it defaults to a model-specific value that is known
-                to work well.
-            '''
-        )
-        find_ticket_command_parser.add_argument(
-            '-b',
-            '--batch-size',
-            dest='batch_size',
-            type=int,
-            default=None,
-            help='''
-                The size of the mini-batch used during training and testing. If not specified, then it defaults to a model-specific value that is
-                known to work well.
-            '''
-        )
-        find_ticket_command_parser.add_argument(
-            '-l',
-            '--learning-rate',
-            dest='learning_rate',
-            type=float,
-            default=None,
-            help='''
-                The learning rate used in the training of the model. If not specified, then it defaults to a model-specific value that is known to
-                work well.
-            '''
-        )
+        # Returns the parsed command line arguments
+        return arguments

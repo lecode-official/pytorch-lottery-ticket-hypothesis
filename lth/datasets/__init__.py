@@ -19,6 +19,16 @@ def create_dataset(name, dataset_path, batch_size):
             The path where the dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
         batch_size: int
             The number of samples that are to be batched together.
+
+    Raises
+    ------
+        ValueError
+            When the dataset with the specified name could not be found, then a ValueError is raised.
+
+    Returns
+    -------
+        BaseDataset
+            Returns the dataset with the specified name.
     """
 
     # Gets all the other Python modules that are in the dataset module

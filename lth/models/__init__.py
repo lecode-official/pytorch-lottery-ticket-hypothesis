@@ -217,6 +217,16 @@ def create_model(name, input_size, number_of_input_channels, number_of_classes):
             The number of channels that the input tensor has.
         number_of_classes: int
             The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural network.
+
+    Raises
+    ------
+        ValueError
+            When the model with the specified name could not be found, then a ValueError is raised.
+
+    Returns
+    -------
+        BaseDataset
+            Returns the model with the specified name.
     """
 
     # Gets all the other Python modules that are in the models module
