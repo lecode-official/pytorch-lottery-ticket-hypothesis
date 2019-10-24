@@ -257,13 +257,13 @@ def get_model_ids():
             model_ids.append(model_class.model_id)
     return model_ids
 
-def create_model(model_id, input_size, number_of_input_channels, number_of_classes):
+def create_model(id_of_model, input_size, number_of_input_channels, number_of_classes):
     """
     Creates the model with the specified name.
 
     Parameters
     ----------
-        model_id: str
+        id_of_model: str
             The ID of the model that is to be created.
         input_size: tuple
             A tuple containing the edge lengths of the input tensors, which is the input size of the neural network.
@@ -286,10 +286,10 @@ def create_model(model_id, input_size, number_of_input_channels, number_of_class
     # Finds the class for the specified model, all models in this module must have a class-level variable containing a model identifier
     found_model_class = None
     for model_class in get_model_classes():
-        if hasattr(model_class, 'model_id') and model_class.model_id == model_id:
+        if hasattr(model_class, 'model_id') and model_class.model_id == id_of_model:
             found_model_class = model_class
     if found_model_class is None:
-        raise ValueError('The model with the name "{0}" could not be found.'.format(model_id))
+        raise ValueError('The model with the name "{0}" could not be found.'.format(id_of_model))
 
     # Creates the model and returns it
     return found_model_class(input_size, number_of_input_channels, number_of_classes)

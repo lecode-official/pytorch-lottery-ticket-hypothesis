@@ -58,13 +58,13 @@ def get_dataset_ids():
             dataset_ids.append(dataset_class.dataset_id)
     return dataset_ids
 
-def create_dataset(dataset_id, dataset_path, batch_size):
+def create_dataset(id_of_dataset, dataset_path, batch_size):
     """
     Creates the specified dataset.
 
     Parameters
     ----------
-        dataset_id: str
+        id_of_dataset: str
             The ID of the dataset that is to be created.
         path: str
             The path where the dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
@@ -85,10 +85,10 @@ def create_dataset(dataset_id, dataset_path, batch_size):
     # Finds the class for the specified dataset, all datasets in this module must have a class-level variable containing a dataset identifier
     found_dataset_class = None
     for dataset_class in get_dataset_classes():
-        if hasattr(dataset_class, 'dataset_id') and dataset_class.dataset_id == dataset_id:
+        if hasattr(dataset_class, 'dataset_id') and dataset_class.dataset_id == id_of_dataset:
             found_dataset_class = dataset_class
     if found_dataset_class is None:
-        raise ValueError('The dataset with the name "{0}" could not be found.'.format(dataset_id))
+        raise ValueError('The dataset with the name "{0}" could not be found.'.format(id_of_dataset))
 
     # Creates the dataset and returns it
     return found_dataset_class(dataset_path, batch_size)

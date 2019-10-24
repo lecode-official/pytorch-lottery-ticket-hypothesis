@@ -5,8 +5,8 @@ import torch
 from . import model_id
 from . import BaseModel
 
-@model_id('lenet-300-100')
-class LeNet_300_100(BaseModel): # pylint: disable=invalid-name
+@model_id('lenet-300-100') # pylint: disable=invalid-name
+class LeNet_300_100(BaseModel):
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
