@@ -205,12 +205,58 @@ class BaseModel(torch.nn.Module):
 
         raise NotImplementedError()
 
-def create_model(name, input_size, number_of_input_channels, number_of_classes):
+def get_model_classes():
+    """
+    Retrieves the classes of all the available models.
+
+    Returns
+    -------
+        list
+            Returns a list containing the classes of all the models.
+    """
+
+
+    # Gets all the other Python modules that are in the models module
+    model_modules = []
+    for module_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '*.py')):
+        module_name = os.path.splitext(os.path.basename(module_path))[0]
+        model_modules.append(__import__('lth.models.{0}'.format(module_name), fromlist=['']))
+
+    # Gets the model classes, which are all the classes in the models module and its sub-modules that inherit from BaseDataset
+    model_classes = []
+    for module in model_modules:
+        for _, module_class in inspect.getmembers(module, inspect.isclass):
+            if BaseModel in module_class.__bases__ and module_class not in model_classes:
+                model_classes.append(module_class)
+
+    # Returns the list of model classes
+    return model_classes
+
+def get_model_ids():
+    """
+    Retrieves the IDs of all available models.
+
+    Returns
+    -------
+        list
+            Returns a list containing the IDs of all available models.
+    """
+
+    # Gets the IDs of all the models and returns them
+    model_ids = []
+    for model_class in get_model_classes():
+        if hasattr(model_class, 'model_id'):
+            model_ids.append(model_class.model_id)
+    return model_ids
+
+def create_model(model_id, input_size, number_of_input_channels, number_of_classes):
     """
     Creates the model with the specified name.
 
     Parameters
     ----------
+        model_id: str
+            The ID of the model that is to be created.
         input_size: tuple
             A tuple containing the edge lengths of the input tensors, which is the input size of the neural network.
         number_of_input_channels: int
@@ -229,26 +275,13 @@ def create_model(name, input_size, number_of_input_channels, number_of_classes):
             Returns the model with the specified name.
     """
 
-    # Gets all the other Python modules that are in the models module
-    model_modules = []
-    for module_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '*.py')):
-        module_name = os.path.splitext(os.path.basename(module_path))[0]
-        model_modules.append(__import__('lth.models.{0}'.format(module_name), fromlist=['']))
-
-    # Gets the model classes, which are all the classes in the models module and its sub-modules that inherit from BaseModel
-    model_classes = []
-    for module in model_modules:
-        for _, module_class in inspect.getmembers(module, inspect.isclass):
-            if BaseModel in module_class.__bases__ and module_class not in model_classes:
-                model_classes.append(module_class)
-
     # Finds the class for the specified model, all models in this module must have a class-level variable containing a model identifier
     found_model_class = None
-    for model_class in model_classes:
-        if hasattr(model_class, 'model_id') and model_class.model_id == name:
+    for model_class in get_model_classes():
+        if hasattr(model_class, 'model_id') and model_class.model_id == model_id:
             found_model_class = model_class
     if found_model_class is None:
-        raise ValueError('The model with the name "{0}" could not be found.'.format(name))
+        raise ValueError('The model with the name "{0}" could not be found.'.format(model_id))
 
     # Creates the model and returns it
     return found_model_class(input_size, number_of_input_channels, number_of_classes)

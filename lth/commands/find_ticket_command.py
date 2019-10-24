@@ -4,8 +4,10 @@ import logging
 
 from . import BaseCommand
 from ..models import create_model
+from ..models import get_model_ids
 from ..models import hyperparameters
 from ..datasets import create_dataset
+from ..datasets import get_dataset_ids
 from ..training.trainer import Trainer
 from ..training.evaluator import Evaluator
 from ..pruning.magnitude_pruning import LayerWiseMagnitudePruner
@@ -41,13 +43,13 @@ class FindTicketCommand(BaseCommand):
         parser.add_argument(
             'model',
             type=str,
-            choices=['lenet5', 'lenet-300-100', 'vgg2'],
+            choices=get_model_ids(),
             help='The name of the model for which a lottery ticket is to be found.'
         )
         parser.add_argument(
             'dataset',
             type=str,
-            choices=['mnist', 'cifar10'],
+            choices=get_dataset_ids(),
             help='The name of the dataset on which the model is to be trained.'
         )
         parser.add_argument(
