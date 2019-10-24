@@ -19,9 +19,9 @@ Morcos et al. show in their paper **_"One ticket to win them all: generalizing l
 
 Zhou et al. explore winning tickets in-depth and extended the algorithm to adapt it to different methods of producing masks (mask criterion) and different actions on weights whose mask value is 0 or 1 (mask-0 action and mask-1 action respectively). They use this extension to analyze winning tickets and their creation. Their proposed algorithm works as follows:
 
-1. Initialize a mask $`m`$ to all ones. Randomly initialize the parameters $`w`$ of a network $`f(x;w \odot m)`$.
-1. Train the parameters $`w`$ of the network $`f(x;w \odot m)`$ to completion. Denote the initial weights before training $`w_i`$ and the final weights after training $`w_f`$.
-1. *Mask Criterion*. Use the mask criterion $`M(w_i, w_f)`$ to produce a masking score for each currently unmasked weight. Rank the weights in each layer by their scores, set the mask value for the top $`p\%`$ to $`1`$, the bottom $`(100 - p)\%`$ tp $`0`$, breaking ties randomly. Here $`p`$ may vary by layer. $`M(w_i, w_f) = |w_f|`$ is the corresponding mask criterion used by Frankle et al.
+1. Initialize a mask $`m`$ to all ones. Randomly initialize the parameters $`\Theta`$ of a network $`f(x;\Theta \odot m)`$.
+1. Train the parameters $`w`$ of the network $`f(x;\Theta \odot m)`$ to completion. Denote the initial weights before training $`\Theta_0`$ and the final weights after training for $`j`$ iterations $`\Theta_j`$.
+1. *Mask Criterion*. Use the mask criterion $`M(\Theta_0, \Theta_j)`$ to produce a masking score for each currently unmasked weight. Rank the weights in each layer by their scores, set the mask value for the top $`p\%`$ to $`1`$, the bottom $`(100 - p)\%`$ tp $`0`$, breaking ties randomly. Here $`p`$ may vary by layer. $`M(\Theta_0, \Theta_j) = |\Theta_j|`$ is the corresponding mask criterion used by Frankle et al.
 1. *Mask-1 Action*. Take some action with the weights with the mask value $`1`$. Frankle et al. reset these weights to their initial value.
 1. *Mask-0 Action*. Take some action with the weights with the mask value $`0`$. Frankle et al. pruned these weights, i.e. set them to $`0`$ and froze them during subsequent training.
 1. Repeat from 1 if performing iterative pruning.
