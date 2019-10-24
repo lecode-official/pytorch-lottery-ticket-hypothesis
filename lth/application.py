@@ -29,9 +29,12 @@ class Application:
         arguments = self.parse_command_line_arguments()
 
         # Finds the command that is to be run
-        for command in self.commands:
-            if command.name == arguments.command:
-                command.run(arguments)
+        try:
+            for command in self.commands:
+                if command.name == arguments.command:
+                    command.run(arguments)
+        except Exception as exception: # pylint: disable=broad-except
+            self.logger.error('An error occurred in the command "%s": %s', arguments.command, str(exception))
 
     def parse_command_line_arguments(self):
         """Parses the command line arguments of the application."""
