@@ -57,6 +57,13 @@ python -m lth --help # For general information about the application as well as 
 python -m lth <command-name> --help # For information about the specified command
 ```
 
+## To-Do's
+
+1. Add support for different mask-0 and mask-1 actions.
+1. Add support for different optimizers (especially RAdam).
+1. Implement the ResNet-18 model.
+1. All results of the algorithm should be written to files, so that they can later be evaluated.
+
 ## Interesting Research Avenues and Experiment Ideas
 
 1. Perform the usual Lottery Ticket algorithm but re-initialize pruned weights instead of setting them to 0. If winning tickets are so good, because their initial weights won the initialization lottery, then this procedure would increase the chances of finding good initial values for all weights. In this procedure one would have to start with a larger pruning rate and then decrease it over time. If this procedure works, then the neural network should reach better accuracy than its normally trained counterpart.
