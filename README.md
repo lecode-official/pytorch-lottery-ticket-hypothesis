@@ -60,9 +60,12 @@ python -m lth <command-name> --help # For information about the specified comman
 ## To-Do's
 
 1. Add support for different mask-0 and mask-1 actions.
-1. Add support for different optimizers (especially RAdam).
-1. Implement the ResNet-18 model.
-1. All results of the algorithm should be written to files, so that they can later be evaluated.
+2. Add support for different optimizers (especially RAdam).
+3. Implement the ResNet-18 model.
+4. All results of the algorithm should be written to files, so that they can later be evaluated.
+5. The names of the VGG networks seems to be wrong, they should be renamed
+6. The math is not properly rendered on GitHub
+7. General clean up, so that the project can be made public
 
 ## Interesting Research Avenues and Experiment Ideas
 

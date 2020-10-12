@@ -223,7 +223,6 @@ def get_model_classes():
             Returns a list containing the classes of all the models.
     """
 
-
     # Gets all the other Python modules that are in the models module
     model_modules = []
     for module_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '*.py')):
