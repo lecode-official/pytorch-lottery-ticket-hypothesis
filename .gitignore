@@ -1,9 +1,20 @@
 
-# Ignores the compiled Python files
+# Ignores the Python cache
 __pycache__
 
 # Ignores downloaded datasets
-/datasets
+datasets
 
-# Excludes the database of rope, which is a Python module used for refactoring
-.ropeproject
+# Ignores LaTeX files
+*.tex
+*.bib
+*.pdf
+*.synctex*
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.run.xml
