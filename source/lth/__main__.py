@@ -1,6 +1,6 @@
-"""Represents the entry-point to the lottery ticket hypothesis application."""
+"""The entrypoint of the lth package."""
 
-from .application import Application
+from lth.application import Application
 
 APPLICATION = Application()
 APPLICATION.run()

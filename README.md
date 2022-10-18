@@ -59,9 +59,10 @@ python -m lth <command-name> --help # For information about the specified comman
 
 ## To-Do's
 
-1. Add support for different mask-0 and mask-1 actions.
-2. Add support for different optimizers (especially RAdam).
-3. Implement the ResNet-18 model.
-4. All results of the algorithm should be written to files, so that they can later be evaluated.
-5. The names of the VGG networks seems to be wrong, they should be renamed
-6. General clean up, so that the project can be made public
+1. Rename the `find-ticket` command to `find-winning-ticket`
+2. Add support for different mask-0 and mask-1 actions.
+3. Add support for different optimizers (especially RAdam).
+4. Implement the ResNet-18 model.
+5. All results of the algorithm should be written to files, so that they can later be evaluated.
+6. The names of the VGG networks seems to be wrong, they should be renamed
+7. General clean up, so that the project can be made public

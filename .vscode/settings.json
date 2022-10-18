@@ -1,21 +1,15 @@
 {
     "editor.rulers": [150],
+
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
-
-    "python.pythonPath": "/home/dneumann/miniconda3/envs/lottery-ticket-hypothesis/bin/python",
-    "python.linting.pylintArgs": [
-        "--max-line-length", "150",
-        "--generated-members", "torch.*",
-        "--disable", "arguments-differ,too-few-public-methods,too-many-instance-attributes,too-many-arguments,no-self-use,R0801"
-    ],
-
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
+        "**/Thumbs.db": true,
         "**/__pycache__": true
     },
 
@@ -32,9 +26,11 @@
         "functools",
         "Glorot",
         "Hadamard",
+        "hyperparameters",
         "isclass",
         "isdir",
         "lenet",
+        "levelname",
         "mathcal",
         "mnist",
         "MNIST",
