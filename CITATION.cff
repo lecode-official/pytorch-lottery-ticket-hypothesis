@@ -1,0 +1,29 @@
+
+cff-version: 1.2.0
+message: >-
+  If you use this software in your research, please
+  cite it as below.
+type: software
+title: Lottery Ticket Hypothesis
+abstract: >-
+  A PyTorch implementation of the Lottery Ticket
+  algorithm introduced by Frankle et al. in "The
+  Lottery Ticket Hypothesis: Finding Sparse,
+  Trainable Neural Networks".
+authors:
+  - given-names: David
+    family-names: Neumann
+    email: david.neumann@hhi.fraunhofer.de
+    affiliation: Fraunhofer HHI
+    orcid: 'https://orcid.org/0000-0003-1907-8329'
+keywords:
+  - Deep Learning
+  - Python
+  - PyTorch
+  - Lottery Ticket Hypothesis
+  - Pruning
+version: 0.1.0
+date-released: 2022-10-18
+license: MIT
+repository: https://github.com/lecode-official/lottery-ticket-hypothesis.git
+url: https://github.com/lecode-official/lottery-ticket-hypothesis
