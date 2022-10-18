@@ -20,10 +20,11 @@ keywords:
   - Deep Learning
   - Python
   - PyTorch
+  - PyTorch Implementation
   - Lottery Ticket Hypothesis
   - Pruning
 version: 0.1.0
 date-released: 2022-10-18
 license: MIT
-repository: https://github.com/lecode-official/lottery-ticket-hypothesis.git
-url: https://github.com/lecode-official/lottery-ticket-hypothesis
+repository: https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis.git
+url: https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis
