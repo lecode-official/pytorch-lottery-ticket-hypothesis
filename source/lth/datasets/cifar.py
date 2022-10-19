@@ -12,16 +12,12 @@ class Cifar10(BaseDataset):
     """Represents the CIFAR-10 dataset."""
 
     def __init__(self, path, batch_size):
-        """
-        Initializes a new Cifar10 instance.
+        """Initializes a new Cifar10 instance.
 
-        Parameters
-        ----------
-            path: str
-                The path were the CIFAR-10 dataset is stored. If the dataset could not be found, then it is automatically downloaded to the specified
-                location.
-            batch_size: int
-                The number of samples that are to be batched together.
+        Args:
+            path (_type_): The path were the CIFAR-10 dataset is stored. If the dataset could not be found, then it is automatically downloaded to the
+                specified location.
+            batch_size (_type_): The number of samples that are to be batched together.
         """
 
         # Stores the arguments

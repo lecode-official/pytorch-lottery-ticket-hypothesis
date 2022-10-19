@@ -11,18 +11,14 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
     def __init__(self, input_size: tuple = (28, 28), number_of_input_channels: int = 1, number_of_classes: int = 10) -> None:
-        """
-        Initializes a new LeNet-5 instance.
+        """Initializes a new LeNet-5 instance.
 
-        Parameters
-        ----------
-            input_size: int or tuple
-                The size of the input of the neural network. Defaults to the typical MNIST size of 28x28.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical MNIST number of channels: 1.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in MNIST: 10.
+        Args:
+            input_size (tuple, optional): The size of the input of the neural network. Defaults to the typical MNIST size of 28x28.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical MNIST number of
+                channels: 1.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in MNIST: 10.
         """
 
         # Invokes the constructor of the base class
@@ -55,18 +51,13 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Brings the input to the correct size
@@ -85,27 +76,22 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
 
 @model_id('lenet-5')
 class LeNet5(BaseModel):
-    """
-    Represents the classical convolutional neural network architecture LeNet-5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
-    Applied to Document Recognition.", where it was used for character recognition.
+    """Represents the classical convolutional neural network architecture LeNet-5 introduced by Yann LeCun et al. in their paper "Gradient-Based
+    Learning Applied to Document Recognition.", where it was used for character recognition.
     """
 
     def __init__(self, input_size: tuple = (28, 28), number_of_input_channels: int = 1, number_of_classes: int = 10):
-        """
-        Initializes a new LeNet-5 instance.
+        """Initializes a new LeNet-5 instance.
 
-        Parameters
-        ----------
-            input_size: tuple
-                A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical MNIST size of 28x28. Be careful, this is not the input size described in the original paper. The original
-                paper used an input size of 32x32, but since this model is mostly used to train on MNIST, the default should be be image size of the
-                MNIST examples, which is 28x28.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical MNIST number of channels: 1.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in MNIST: 10.
+        Args:
+            input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
+                the neural network. Defaults to the typical MNIST size of 28x28. Be careful, this is not the input size described in the original
+                paper. The original paper used an input size of 32x32, but since this model is mostly used to train on MNIST, the default should be be
+                image size of the MNIST examples, which is 28x28.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical MNIST number of
+                channels: 1.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in MNIST: 10.
         """
 
         # Invokes the constructor of the base class
@@ -124,7 +110,7 @@ class LeNet5(BaseModel):
         # Adds the first convolution layer followed by a BatchNorm layer, since the convolution layer has a kernel size of 5x5, the receptive field
         # shrinks by 4 on each side, after the convolution, a max pooling is applied with a filter size of 2x2, therefore, the receptive field shrinks
         # by a factor of 0.5, the edge length of the output after the first convolution and the max pooling is calculated by (x - 4) / 2, e.g.
-        # convolution: (32, 32, 1) -> (28, 28, 6), avermaxage pooling: (28, 28, 6) -> (14, 14, 6)
+        # convolution: (32, 32, 1) -> (28, 28, 6), max pooling: (28, 28, 6) -> (14, 14, 6)
         self.convolution_1 = torch.nn.Conv2d(number_of_input_channels, 6, kernel_size=5)
         self.batch_norm_1 = torch.nn.BatchNorm2d(num_features=6)
         output_size = ((input_size[0] - 4) // 2, (input_size[1] - 4) // 2)
@@ -146,18 +132,13 @@ class LeNet5(BaseModel):
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Performs forward pass for the first convolutional layer

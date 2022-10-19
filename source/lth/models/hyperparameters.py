@@ -2,33 +2,22 @@
 
 
 def get_defaults(model_name: str, dataset_name: str, learning_rate: float, batch_size: int, number_of_epochs: int) -> tuple[float, int, int]:
-    """
-    Retrieves recommended hyperparameters for the specified model and dataset combination.
+    """Retrieves recommended hyperparameters for the specified model and dataset combination.
 
-    Parameters
-    ----------
-        model_name: str
-            The name of the model for which the default hyperparameters are to be retrieved.
-        dataset_name: str
-            The name of the dataset for which the default hyperparameters are to be retrieved.
-        learning_rate: float
-            The learning rate specified by the user. When None, then a default value is returned, otherwise this is returned.
-        batch_size: float
-            The batch size specified by the user. When None, then a default value is returned, otherwise this is returned.
-        number_of_epochs: float
-            The number of epochs specified by the user. When None, then a default value is returned, otherwise this is returned.
+    Args:
+        model_name (str): The name of the model for which the default hyperparameters are to be retrieved.
+        dataset_name (str): The name of the dataset for which the default hyperparameters are to be retrieved.
+        learning_rate (float): The learning rate specified by the user. When None, then a default value is returned, otherwise this is returned.
+        batch_size (int): The batch size specified by the user. When None, then a default value is returned, otherwise this is returned.
+        number_of_epochs (int): The number of epochs specified by the user. When None, then a default value is returned, otherwise this is returned.
 
-    Raises
-    ------
-        ValueError
-            If any of the hyperparameters was not specified and there is not a default value for the specified model and dataset combination, then a
-            ValueError is raised.
+    Raises:
+        ValueError: If any of the hyperparameters were not specified and there is no a default value for the specified model and dataset combination,
+            an exception is raised.
 
-    Returns
-    -------
-        tuple
-            Returns a tuple containing a learning rate, a batch size, and the number of epochs to train for. The values are either the ones specified
-            via the parameters or, if they are None, default values.
+    Returns:
+        tuple[float, int, int]: Returns a tuple containing a learning rate, a batch size, and the number of epochs to train for. The values are either
+            the ones specified via the parameters or, if they are None, default values.
     """
 
     default_learning_rate, default_batch_size, default_number_of_epochs = None, None, None

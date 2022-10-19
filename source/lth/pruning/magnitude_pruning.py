@@ -7,30 +7,25 @@ import torch
 
 
 class LayerWiseMagnitudePruner:
-    """
-    Represents a pruning method that prunes away a certain layer-specific percentage of the weights of a neural network model that have the lowest
+    """Represents a pruning method that prunes away a certain layer-specific percentage of the weights of a neural network model that have the lowest
     magnitude. This is the pruning method used in the original paper by Frankle et al. "The Lottery Ticket Hypothesis: Finding Sparse, Trainable
     Neural Networks".
     """
 
     def __init__(self, model: torch.nn.Module) -> None:
-        """
-        Initializes a new LayerWiseMagnitudePruner instance.
+        """Initializes a new LayerWiseMagnitudePruner instance.
 
-        Parameters
-        ----------
-            model: torch.nn.Module
-                The neural network model that is to be pruned.
+        Args:
+            model (torch.nn.Module): The neural network model that is to be pruned.
         """
 
         self.model = model
         self.logger = logging.getLogger('lth.pruning.magnitude_pruning.LayerWiseMagnitudePruner')
 
     def create_pruning_masks(self) -> None:
-        """
-        Generates the pruning masks for all layers of the model. The pruning is not performed in-place on the layers of the model itself but a pruning
-        mask is created for each layer (of the same shape as the layer), which has 0 values for all weights in the layer that were pruned and values
-        of 1 for all weights that were not pruned.
+        """Generates the pruning masks for all layers of the model. The pruning is not performed in-place on the layers of the model itself but a
+        pruning mask is created for each layer (of the same shape as the layer), which has 0 values for all weights in the layer that were pruned and
+        values of 1 for all weights that were not pruned.
         """
 
         # Creates the pruning masks for each layer of the model

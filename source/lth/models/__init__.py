@@ -1,4 +1,4 @@
-"""Represents a module that contains multiple neural network models."""
+"""A sub-package that contains multiple neural network models."""
 
 import os
 import glob
@@ -12,7 +12,14 @@ from lth.datasets import BaseDataset
 
 
 def model_id(new_id: str) -> Callable[[type], type]:
-    """A decorator, which adds a model ID to a model class."""
+    """A decorator, which adds a model ID to a model class.
+
+    Args:
+        new_id (str): The ID that is to be added to the model class.
+
+    Returns:
+        Callable[[type], type]: Returns the decorated model class.
+    """
 
     def decorator(model_class: type) -> type:
         model_class.model_id = new_id
@@ -39,25 +46,16 @@ class Layer:
             initial_weights: torch.Tensor,
             initial_biases: torch.Tensor,
             pruning_mask: torch.Tensor) -> None:
-        """
-        Initializes a new Layer instance.
+        """Initializes a new Layer instance.
 
-        Parameters
-        ----------
-            name: str
-                The name of the layer.
-            kind: LayerKind
-                The kind of the layer.
-            weights: torch.nn.Parameter
-                The weights of the layer.
-            biases: torch.nn.Parameter
-                The biases of the layer.
-            initial_weights: torch.Tensor
-                A copy of the initial weights of the layer.
-            initial_biases: torch.Tensor
-                A copy of the initial biases of the layer.
-            pruning_mask: torch.Tensor
-                The current pruning mask of the layer.
+        Args:
+            name (str): The name of the layer.
+            kind (LayerKind): The kind of the layer.
+            weights (torch.nn.Parameter): The weights of the layer.
+            biases (torch.nn.Parameter): The biases of the layer.
+            initial_weights (torch.Tensor): A copy of the initial weights of the layer.
+            initial_biases (torch.Tensor): A copy of the initial biases of the layer.
+            pruning_mask (torch.Tensor): The current pruning mask of the layer.
         """
 
         self.name = name
@@ -82,10 +80,9 @@ class BaseModel(torch.nn.Module):
         self.layers = None
 
     def initialize(self) -> None:
-        """
-        Initializes the model. It initializes the weights of the model using Xavier Normal (equivalent to Gaussian Glorot used in the original Lottery
-        Ticket Hypothesis paper). It also creates an initial pruning mask for the layers of the model. These are initialized with all ones. A pruning
-        mask with all ones does nothing. This method must be called by all sub-classes at the end of their constructor.
+        """Initializes the model. It initializes the weights of the model using Xavier Normal (equivalent to Gaussian Glorot used in the original
+        Lottery Ticket Hypothesis paper). It also creates an initial pruning mask for the layers of the model. These are initialized with all ones. A
+        pruning mask with all ones does nothing. This method must be called by all sub-classes at the end of their constructor.
         """
 
         # Gets the all the fully-connected and convolutional layers of the model (these are the only ones that are being used right now, if new layer
@@ -131,13 +128,10 @@ class BaseModel(torch.nn.Module):
             self.layers.append(Layer(layer_name, layer_kind, weights, biases, initial_weights, initial_biases, pruning_mask))
 
     def get_layer_names(self) -> list[str]:
-        """
-        Retrieves the internal names of all the layers of the model.
+        """Retrieves the internal names of all the layers of the model.
 
-        Returns
-        -------
-            list
-                Returns a list of all the names of the layers of the model.
+        Returns:
+            list[str]: Returns a list of all the names of the layers of the model.
         """
 
         layer_names = []
@@ -146,23 +140,16 @@ class BaseModel(torch.nn.Module):
         return layer_names
 
     def get_layer(self, layer_name: str) -> Layer:
-        """
-        Retrieves the layer of the model with the specified name.
+        """Retrieves the layer of the model with the specified name.
 
-        Parameters
-        ----------
-            layer_name: str
-                The name of the layer that is to be retrieved.
+        Args:
+            layer_name (str): The name of the layer that is to be retrieved.
 
-        Raises
-        ------
-            LookupError
-                If the layer does not exist, then a LookupError is raised.
+        Raises:
+            LookupError: If the layer does not exist, an exception is raised.
 
-        Returns
-        -------
-            Layer
-                Returns the layer with the specified name.
+        Returns:
+            Layer: Returns the layer with the specified name.
         """
 
         for layer in self.layers:
@@ -171,15 +158,11 @@ class BaseModel(torch.nn.Module):
         raise LookupError(f'The specified layer "{layer_name}" does not exist.')
 
     def update_layer_weights(self, layer_name: str, new_weights: torch.Tensor) -> None:
-        """
-        Updates the weights of the specified layer.
+        """Updates the weights of the specified layer.
 
-        Parameters
-        ----------
-            layer_name: str
-                The name of the layer whose weights are to be updated.
-            new_weights: torch.Tensor
-                The new weights of the layer.
+        Args:
+            layer_name (str): The name of the layer whose weights are to be updated.
+            new_weights (torch.Tensor): The new weights of the layer.
         """
 
         self.state_dict()[f'{layer_name}.weight'].copy_(new_weights)
@@ -192,13 +175,10 @@ class BaseModel(torch.nn.Module):
             self.state_dict()[f'{layer.name}.bias'].copy_(layer.initial_biases)
 
     def move_to_device(self, device: Union[int, str, torch.device]) -> None:  # pylint: disable=no-member
-        """
-        Moves the model to the specified device.
+        """Moves the model to the specified device.
 
-        Parameters
-        ----------
-            device: torch.Device
-                The device that the model is to be moved to.
+        Args:
+            device (Union[int, str, torch.device]): The device that the model is to be moved to.
         """
 
         # Moves the model itself to the device
@@ -211,32 +191,27 @@ class BaseModel(torch.nn.Module):
             layer.pruning_mask = layer.pruning_mask.to(device)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network. Since this is the base model, the method is not implemented and must be implemented in
-        all classes that derive from the base model.
+        """Performs the forward pass through the neural network. Since this is the base model, the method is not implemented and must be implemented
+        in all classes that derive from the base model.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Raises:
+            NotImplementedError: _description_
+
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         raise NotImplementedError()
 
 
 def get_model_classes() -> list[type]:
-    """
-    Retrieves the classes of all the available models.
+    """Retrieves the classes of all the available models.
 
-    Returns
-    -------
-        list
-            Returns a list containing the classes of all the models.
+    Returns:
+        list[type]: Returns a list containing the classes of all the models.
     """
 
     # Gets all the other Python modules that are in the models module
@@ -257,13 +232,10 @@ def get_model_classes() -> list[type]:
 
 
 def get_model_ids() -> list[str]:
-    """
-    Retrieves the IDs of all available models.
+    """Retrieves the IDs of all available models.
 
-    Returns
-    -------
-        list
-            Returns a list containing the IDs of all available models.
+    Returns:
+        list[str]: Returns a list containing the IDs of all available models.
     """
 
     # Gets the IDs of all the models and returns them
@@ -275,29 +247,20 @@ def get_model_ids() -> list[str]:
 
 
 def create_model(id_of_model: str, input_size: tuple, number_of_input_channels: int, number_of_classes: int) -> BaseDataset:
-    """
-    Creates the model with the specified name.
+    """Creates the model with the specified name.
 
-    Parameters
-    ----------
-        id_of_model: str
-            The ID of the model that is to be created.
-        input_size: tuple
-            A tuple containing the edge lengths of the input tensors, which is the input size of the neural network.
-        number_of_input_channels: int
-            The number of channels that the input tensor has.
-        number_of_classes: int
-            The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural network.
+    Args:
+        id_of_model (str): The ID of the model that is to be created.
+        input_size (tuple): A tuple containing the edge lengths of the input tensors, which is the input size of the neural network.
+        number_of_input_channels (int): The number of channels that the input tensor has.
+        number_of_classes (int): The number of classes that the neural network should be able to differentiate. This corresponds to the output size of
+            the neural network.
 
-    Raises
-    ------
-        ValueError
-            When the model with the specified name could not be found, then a ValueError is raised.
+    Raises:
+        ValueError: When the model with the specified name could not be found, an exception is raised.
 
-    Returns
-    -------
-        BaseDataset
-            Returns the model with the specified name.
+    Returns:
+        BaseDataset: Returns the model with the specified name.
     """
 
     # Finds the class for the specified model, all models in this module must have a class-level variable containing a model identifier

@@ -12,15 +12,11 @@ class Mnist(BaseDataset):
     """Represents the classical MNIST dataset."""
 
     def __init__(self, path, batch_size):
-        """
-        Initializes a new Mnist instance.
+        """Initializes a new Mnist instance.
 
-        Parameters
-        ----------
-            path: str
-                The path where the MNIST dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
-            batch_size: int
-                The number of samples that are to be batched together.
+        Args:
+            path (_type_): The path where the MNIST dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
+            batch_size (_type_): The number of samples that are to be batched together.
         """
 
         # Stores the arguments

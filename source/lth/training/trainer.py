@@ -12,15 +12,11 @@ class Trainer:
     """Represents a standard training for training a neural network model."""
 
     def __init__(self, model: torch.nn.Module, dataset: BaseDataset) -> None:
-        """
-        Initializes a new Trainer instance.
+        """Initializes a new Trainer instance.
 
-        Parameters
-        ----------
-            model: torch.nn.Module
-                The neural network model that is to be trained.
-            dataset
-                The dataset that is used for the training of the model.
+        Args:
+            model (torch.nn.Module): The neural network model that is to be trained.
+            dataset (BaseDataset): The dataset that is used for the training of the model.
         """
 
         self.model = model
@@ -28,15 +24,11 @@ class Trainer:
         self.logger = logging.getLogger('lth.training.trainer.Trainer')
 
     def train(self, learning_rate: float, number_of_epochs: int) -> None:
-        """
-        Starts the training of the neural network.
+        """Starts the training of the neural network.
 
-        Parameters
-        ----------
-            learning_rate: float
-                The learning rate that is to be used for the training.
-            number_of_epochs: int
-                The number of epochs for which the model is to be trained.
+        Args:
+            learning_rate (float): The learning rate that is to be used for the training.
+            number_of_epochs (int): The number of epochs for which the model is to be trained.
         """
 
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used

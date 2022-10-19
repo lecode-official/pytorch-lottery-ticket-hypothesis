@@ -151,7 +151,7 @@ If you use this software in your research, please cite it like this or use the "
 
 ## To-Do's
 
-1. Change the style of the Python doc strings
+1. Simplify the getLogger methods calls
 2. The names of the VGG networks seems to be wrong, they should be renamed
 3. Intelligently retain model checkpoint files
 4. Extensively log hyperparameters and training statistics

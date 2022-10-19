@@ -1,7 +1,6 @@
-"""
-Represents a module that contains the multiple neural network models based on the VGG family of architectures first introduced by K. Simonyan and A.
-Zisserman in their paper "Very Deep Convolutional Networks for Large-Scale Image Recognition". VGG was named after Oxford's renowned Visual Geometry
-Group (VGG).
+"""Represents a module that contains the multiple neural network models based on the VGG family of architectures first introduced by K. Simonyan and
+A. Zisserman in their paper "Very Deep Convolutional Networks for Large-Scale Image Recognition". VGG was named after Oxford's renowned Visual
+Geometry Group (VGG).
 """
 
 import torch
@@ -12,25 +11,20 @@ from . import BaseModel
 
 @model_id('vgg5')
 class Vgg5(BaseModel):
-    """
-    Represents a very small VGG-variant with only 5 weight layers. In the original paper by Frankle et al., this is referred to as Conv-2 as it has 2
-    convolutional layers.
+    """Represents a very small VGG-variant with only 5 weight layers. In the original paper by Frankle et al., this is referred to as Conv-2 as it has
+    2 convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """
-        Initializes a new Vgg2 instance.
+        """Initializes a new Vgg2 instance.
 
-        Parameters
-        ----------
-            input_size: tuple
-                A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical CIFAR-10 size of 32x32.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical CIFAR-10 number of channels: 3.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in CIFAR-10: 10.
+        Args:
+            input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
+                the neural network. Defaults to the typical CIFAR-10 size of 32x32.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical CIFAR-10 number of
+                channels: 3.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in CIFAR-10: 10.
         """
 
         # Invokes the constructor of the base class
@@ -70,18 +64,13 @@ class Vgg5(BaseModel):
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Performs forward pass for the first convolutional layer
@@ -111,25 +100,20 @@ class Vgg5(BaseModel):
 
 @model_id('vgg7')
 class Vgg7(BaseModel):
-    """
-    Represents a small VGG-variant with only 7 weight layers. In the original paper by Frankle et al., this is referred to as Conv-4, as it has 4
+    """Represents a small VGG-variant with only 7 weight layers. In the original paper by Frankle et al., this is referred to as Conv-4, as it has 4
     convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """
-        Initializes a new Vgg4 instance.
+        """Initializes a new Vgg4 instance.
 
-        Parameters
-        ----------
-            input_size: tuple
-                A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical CIFAR-10 size of 32x32.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical CIFAR-10 number of channels: 3.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in CIFAR-10: 10.
+        Args:
+            input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
+                the neural network. Defaults to the typical CIFAR-10 size of 32x32.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical CIFAR-10 number of
+                channels: 3.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in CIFAR-10: 10.
         """
 
         # Invokes the constructor of the base class
@@ -184,18 +168,13 @@ class Vgg7(BaseModel):
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Performs forward pass for the first convolutional layer
@@ -236,25 +215,20 @@ class Vgg7(BaseModel):
 
 @model_id('vgg9')
 class Vgg9(BaseModel):
-    """
-    Represents a small VGG-variant with only 9 weight layers. In the original paper by Frankle et al., this is referred to as Conv-6, as it has 6
+    """Represents a small VGG-variant with only 9 weight layers. In the original paper by Frankle et al., this is referred to as Conv-6, as it has 6
     convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """
-        Initializes a new Vgg6 instance.
+        """Initializes a new Vgg6 instance.
 
-        Parameters
-        ----------
-            input_size: tuple
-                A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical CIFAR-10 size of 32x32.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical CIFAR-10 number of channels: 3.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in CIFAR-10: 10.
+        Args:
+            input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
+                the neural network. Defaults to the typical CIFAR-10 size of 32x32.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical CIFAR-10 number of
+                channels: 3.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in CIFAR-10: 10.
         """
 
         # Invokes the constructor of the base class
@@ -324,18 +298,13 @@ class Vgg9(BaseModel):
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Performs forward pass for the first convolutional layer
@@ -387,27 +356,22 @@ class Vgg9(BaseModel):
 
 @model_id('vgg17')
 class Vgg17(BaseModel):
-    """
-    Represents a VGG-variant with 17 weight layers. In the original paper by Frankle et al. this is referred to as VGG19, because it is exactly as
+    """Represents a VGG-variant with 17 weight layers. In the original paper by Frankle et al. this is referred to as VGG19, because it is exactly as
     VGG19 with the difference, that this version was adapted to CIFAR-10 and is therefore missing 2 fully-connected layers at the end, but it has 16
     convolutional layers just as VGG19. Another difference to the original VGG19 is that after the last convolutional layer, an average pooling is
     performed instead of max pooling. This is the same as in the original paper by Frankle et al.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """
-        Initializes a new Vgg19 instance.
+        """Initializes a new Vgg19 instance.
 
-        Parameters
-        ----------
-            input_size: tuple
-                A tuple containing the edge lengths of the input images, which is the input size of the first convolution of the neural network.
-                Defaults to the typical CIFAR-10 size of 32x32.
-            number_of_input_channels: int
-                The number of channels that the input image has. Defaults to the typical CIFAR-10 number of channels: 3.
-            number_of_classes: int
-                The number of classes that the neural network should be able to differentiate. This corresponds to the output size of the neural
-                network, which defaults to the number of classes in CIFAR-10: 10.
+        Args:
+            input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
+                the neural network. Defaults to the typical CIFAR-10 size of 32x32.
+            number_of_input_channels (int, optional): The number of channels that the input image has. Defaults to the typical CIFAR-10 number of
+                channels: 3.
+            number_of_classes (int, optional): The number of classes that the neural network should be able to differentiate. This corresponds to the
+                output size of the neural network. Defaults to the number of classes in CIFAR-10: 10.
         """
 
         # Invokes the constructor of the base class
@@ -545,18 +509,13 @@ class Vgg17(BaseModel):
         self.initialize()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Performs the forward pass through the neural network.
+        """Performs the forward pass through the neural network.
 
-        Parameters
-        ----------
-            x: torch.Tensor
-                The input to the neural network.
+        Args:
+            x (torch.Tensor): The input to the neural network.
 
-        Returns
-        -------
-            torch.Tensor
-                Returns the output of the neural network.
+        Returns:
+            torch.Tensor: Returns the output of the neural network.
         """
 
         # Performs forward pass for the first convolutional layer

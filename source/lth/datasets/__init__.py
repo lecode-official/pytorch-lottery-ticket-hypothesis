@@ -1,4 +1,4 @@
-"""Represents a module that contains multiple datasets for training neural networks."""
+"""A sub-package that contains multiple datasets for training neural networks."""
 
 import os
 import glob
@@ -7,7 +7,14 @@ from typing import Callable
 
 
 def dataset_id(new_id: str) -> Callable[[type], type]:
-    """A decorator, which adds a dataset ID to a dataset class."""
+    """A decorator, which adds a dataset ID to a dataset class.
+
+    Args:
+        new_id (str): The ID that is to be added to the dataset class.
+
+    Returns:
+        Callable[[type], type]: Returns the decorated dataset class.
+    """
 
     def decorator(dataset_class: type) -> type:
         dataset_class.dataset_id = new_id
@@ -20,13 +27,10 @@ class BaseDataset:
 
 
 def get_dataset_classes() -> list[type]:
-    """
-    Retrieves the classes of all the available datasets.
+    """Retrieves the classes of all the available datasets.
 
-    Returns
-    -------
-        list
-            Returns a list containing the classes of all the datasets.
+    Returns:
+        list[type]: Returns a list containing the classes of all the datasets.
     """
 
     # Gets all the other Python modules that are in the dataset module
@@ -47,13 +51,10 @@ def get_dataset_classes() -> list[type]:
 
 
 def get_dataset_ids() -> list[str]:
-    """
-    Retrieves the IDs of all available datasets.
+    """Retrieves the IDs of all available datasets.
 
-    Returns
-    -------
-        list
-            Returns a list containing the IDs of all available datasets.
+    Returns:
+        list[str]: Returns a list containing the IDs of all available datasets.
     """
 
     # Gets the IDs of all the datasets and returns them
@@ -65,27 +66,18 @@ def get_dataset_ids() -> list[str]:
 
 
 def create_dataset(id_of_dataset: str, dataset_path: str, batch_size: int) -> BaseDataset:
-    """
-    Creates the specified dataset.
+    """Creates the specified dataset.
 
-    Parameters
-    ----------
-        id_of_dataset: str
-            The ID of the dataset that is to be created.
-        path: str
-            The path where the dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
-        batch_size: int
-            The number of samples that are to be batched together.
+    Args:
+        id_of_dataset (str): The ID of the dataset that is to be created.
+        dataset_path (str): The path where the dataset is stored. If it does not exist, it is automatically downloaded to the specified location.
+        batch_size (int): The number of samples that are to be batched together.
 
-    Raises
-    ------
-        ValueError
-            When the dataset with the specified name could not be found, then a ValueError is raised.
+    Raises:
+        ValueError: When the dataset with the specified name could not be found, an exception is raised.
 
-    Returns
-    -------
-        BaseDataset
-            Returns the dataset with the specified name.
+    Returns:
+        BaseDataset: Returns the dataset with the specified name.
     """
 
     # Finds the class for the specified dataset, all datasets in this module must have a class-level variable containing a dataset identifier

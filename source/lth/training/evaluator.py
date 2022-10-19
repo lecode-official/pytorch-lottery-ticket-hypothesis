@@ -12,15 +12,11 @@ class Evaluator:
     """Represents a standard evaluation procedure, which evaluates a model on the complete test split of the dataset and reports the accuracy."""
 
     def __init__(self, model: torch.nn.Module, dataset: BaseDataset) -> None:
-        """
-        Initializes a new Evaluator instance.
+        """Initializes a new Evaluator instance.
 
-        Parameters
-        ----------
-            model: torch.nn.Module
-                The neural network model that is to be evaluated.
-            dataset
-                The dataset on which the neural network model is to be evaluated.
+        Args:
+            model (torch.nn.Module): The neural network model that is to be evaluated.
+            dataset (BaseDataset): The dataset on which the neural network model is to be evaluated.
         """
 
         self.model = model
