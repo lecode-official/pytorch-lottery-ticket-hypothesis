@@ -6,6 +6,7 @@ import torchvision
 from . import dataset_id
 from . import BaseDataset
 
+
 @dataset_id('mnist')
 class Mnist(BaseDataset):
     """Represents the classical MNIST dataset."""

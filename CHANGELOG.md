@@ -2,7 +2,7 @@
 
 ## v0.1.0
 
-*Released on October 18, 2022*
+*Released on October 19, 2022*
 
 - Initial release
 - Implements the original lottery ticket hypothesis algorithm using magnitude pruning

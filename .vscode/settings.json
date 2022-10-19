@@ -1,4 +1,9 @@
 {
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": ["--rcfile", "source/.pylintrc"],
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pycodestyleArgs": ["--config", "source/.pycodestyle"],
+
     "editor.rulers": [150],
 
     "files.trimTrailingWhitespace": true,
@@ -14,6 +19,7 @@
     },
 
     "cSpell.words": [
+        "argsort",
         "Bengio",
         "Beygelzimer",
         "bibtex",
@@ -31,6 +37,7 @@
         "dtype",
         "Dziugaite",
         "Frankle",
+        "fromlist",
         "functools",
         "Gintare",
         "Glorot",
@@ -55,7 +62,9 @@
         "optim",
         "orcid",
         "overfit",
+        "pycodestyle",
         "pylint",
+        "pylintrc",
         "pytorch",
         "relu",
         "Simonyan",
@@ -67,6 +76,7 @@
         "tqdm",
         "uint",
         "Vinod",
+        "xavier",
         "Yann",
         "Yosinski",
         "Yuandong",

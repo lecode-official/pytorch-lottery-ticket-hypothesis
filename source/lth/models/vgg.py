@@ -9,6 +9,7 @@ import torch
 from . import model_id
 from . import BaseModel
 
+
 @model_id('vgg5')
 class Vgg5(BaseModel):
     """
@@ -33,7 +34,7 @@ class Vgg5(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(Vgg5, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'VGG5'
@@ -107,6 +108,7 @@ class Vgg5(BaseModel):
         # Returns the result
         return x
 
+
 @model_id('vgg7')
 class Vgg7(BaseModel):
     """
@@ -131,7 +133,7 @@ class Vgg7(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(Vgg7, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'VGG7'
@@ -231,6 +233,7 @@ class Vgg7(BaseModel):
         # Returns the result
         return x
 
+
 @model_id('vgg9')
 class Vgg9(BaseModel):
     """
@@ -255,7 +258,7 @@ class Vgg9(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(Vgg9, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'VGG9'
@@ -381,6 +384,7 @@ class Vgg9(BaseModel):
         # Returns the result
         return x
 
+
 @model_id('vgg17')
 class Vgg17(BaseModel):
     """
@@ -407,7 +411,7 @@ class Vgg17(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(Vgg17, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'VGG17'

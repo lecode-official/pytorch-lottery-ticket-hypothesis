@@ -1,5 +1,6 @@
 """Represents a module, which contains hyperparameter defaults for several model and dataset combinations."""
 
+
 def get_defaults(model_name, dataset_name, learning_rate, batch_size, number_of_epochs):
     """
     Retrieves recommended hyperparameters for the specified model and dataset combination.
@@ -50,10 +51,10 @@ def get_defaults(model_name, dataset_name, learning_rate, batch_size, number_of_
     number_of_epochs = number_of_epochs if number_of_epochs is not None else default_number_of_epochs
 
     if learning_rate is None:
-        raise ValueError('No learning rate was specified and there are no defaults for training {0} on {1}.'.format(model_name, dataset_name))
+        raise ValueError(f'No learning rate was specified and there are no defaults for training {model_name} on {dataset_name}.')
     if batch_size is None:
-        raise ValueError('No batch size was specified and there are no defaults for training {0} on {1}.'.format(model_name, dataset_name))
+        raise ValueError(f'No batch size was specified and there are no defaults for training {model_name} on {dataset_name}.')
     if number_of_epochs is None:
-        raise ValueError('No number of epochs was specified and there are no defaults for training {0} on {1}.'.format(model_name, dataset_name))
+        raise ValueError(f'No number of epochs was specified and there are no defaults for training {model_name} on {dataset_name}.')
 
     return learning_rate, batch_size, number_of_epochs

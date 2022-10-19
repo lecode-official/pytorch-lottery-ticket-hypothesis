@@ -5,6 +5,7 @@ import logging
 import tqdm
 import torch
 
+
 class LayerWiseMagnitudePruner:
     """
     Represents a pruning method that prunes away a certain layer-specific percentage of the weights of a neural network model that have the lowest
@@ -46,11 +47,11 @@ class LayerWiseMagnitudePruner:
             weights = layer.weights.reshape(-1)
 
             # Since the weights are pruned by their magnitude, the absolute values of the weights are retrieved
-            weights = torch.abs(weights)
+            weights = torch.abs(weights)  # pylint: disable=no-member
 
             # Sorts the weights ascending by their magnitude, this makes it easy to prune weights with the smallest magnitude, because the indices of
             # the weights with the smallest magnitude are at the beginning of the this array
-            sorted_indices = torch.argsort(weights)
+            sorted_indices = torch.argsort(weights)  # pylint: disable=no-member
 
             # Determines the number of weights that should be pruned, since pruning is an iterative process of training, pruning, re-training, it
             # could be that the specified model was already sparsified previously, because the pruning strategy employed here is to sort the elements
@@ -60,7 +61,7 @@ class LayerWiseMagnitudePruner:
             number_of_pruned_weights = int(layer_pruning_rate * (len(sorted_indices) - number_of_zero_weights)) + number_of_zero_weights
 
             # Creates the pruning mask which is 1 for all weights that are not pruned and
-            pruning_mask = torch.zeros_like(weights, dtype=torch.uint8)
+            pruning_mask = torch.zeros_like(weights, dtype=torch.uint8)  # pylint: disable=no-member
             pruning_mask[sorted_indices[:number_of_pruned_weights]] = 0
             pruning_mask[sorted_indices[number_of_pruned_weights:]] = 1
 
@@ -82,7 +83,7 @@ class LayerWiseMagnitudePruner:
             layer = self.model.get_layer(layer_name)
             total_number_of_weights += layer.weights.numel()
             pruned_weights = layer.weights * layer.pruning_mask
-            number_of_pruned_weights += torch.sum(layer.pruning_mask == 0).item()
+            number_of_pruned_weights += torch.sum(layer.pruning_mask == 0).item()  # pylint: disable=no-member
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
             self.model.update_layer_weights(layer.name, pruned_weights)
         self.logger.info('Finished applying the pruning masks to the layers of the model.')

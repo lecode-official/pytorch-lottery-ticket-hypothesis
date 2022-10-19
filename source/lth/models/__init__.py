@@ -7,6 +7,7 @@ from enum import Enum
 
 import torch
 
+
 def model_id(new_id):
     """A decorator, which adds a model ID to a model class."""
 
@@ -15,11 +16,13 @@ def model_id(new_id):
         return model_class
     return decorator
 
+
 class LayerKind(Enum):
     """Represents an enumeration, which contains values for the different type of layers in a neural network."""
 
-    fully_connected = 1
-    convolution_2d = 2
+    FULLY_CONNECTED = 1
+    CONVOLUTION_2D = 2
+
 
 class Layer:
     """Represents a single prunable layer in the neural network."""
@@ -54,6 +57,7 @@ class Layer:
         self.initial_biases = initial_biases
         self.pruning_mask = pruning_mask
 
+
 class BaseModel(torch.nn.Module):
     """Represents the base class for all models."""
 
@@ -61,7 +65,7 @@ class BaseModel(torch.nn.Module):
         """Initializes a new BaseModel instance. Since this is a base class, it should never be called directly."""
 
         # Invokes the constructor of the base class
-        super(BaseModel, self).__init__()
+        super().__init__()
 
         # Initializes some class members
         self.layers = None
@@ -84,9 +88,9 @@ class BaseModel(torch.nn.Module):
             # Determines the type of the layer
             layer_kind = None
             if isinstance(layer_module, torch.nn.Linear):
-                layer_kind = LayerKind.fully_connected
+                layer_kind = LayerKind.FULLY_CONNECTED
             elif isinstance(layer_module, torch.nn.Conv2d):
-                layer_kind = LayerKind.convolution_2d
+                layer_kind = LayerKind.CONVOLUTION_2D
 
             # If the layer is not one of the supported layers, then it is skipped
             if layer_kind is None:
@@ -96,9 +100,9 @@ class BaseModel(torch.nn.Module):
             weights = None
             biases = None
             for parameter_name, parameter in self.named_parameters():
-                if parameter_name == '{0}.weight'.format(layer_name):
+                if parameter_name == f'{layer_name}.weight':
                     weights = parameter
-                if parameter_name == '{0}.bias'.format(layer_name):
+                if parameter_name == f'{layer_name}.bias':
                     biases = parameter
 
             # Initializes the weights of the layer using the Xavier Normal initialization method
@@ -106,11 +110,11 @@ class BaseModel(torch.nn.Module):
 
             # Stores a copy of the initial weights and biases, which are needed by the Lottery Ticket Hypothesis, because after each iteration, the
             # weights are reset to their respective initial values
-            initial_weights = torch.empty_like(weights).copy_(weights)
-            initial_biases = torch.empty_like(biases).copy_(biases)
+            initial_weights = torch.empty_like(weights).copy_(weights)  # pylint: disable=no-member
+            initial_biases = torch.empty_like(biases).copy_(biases)  # pylint: disable=no-member
 
             # Initializes the pruning masks of the layer, which are used for pruning as well as freezing the pruned weights during training
-            pruning_mask = torch.ones_like(weights, dtype=torch.uint8)
+            pruning_mask = torch.ones_like(weights, dtype=torch.uint8)  # pylint: disable=no-member
 
             # Adds the layer to the internal list of layers
             self.layers.append(Layer(layer_name, layer_kind, weights, biases, initial_weights, initial_biases, pruning_mask))
@@ -153,7 +157,7 @@ class BaseModel(torch.nn.Module):
         for layer in self.layers:
             if layer.name == layer_name:
                 return layer
-        raise LookupError('The specified layer "{0}" does not exist.'.format(layer_name))
+        raise LookupError(f'The specified layer "{layer_name}" does not exist.')
 
     def update_layer_weights(self, layer_name, new_weights):
         """
@@ -167,14 +171,14 @@ class BaseModel(torch.nn.Module):
                 The new weights of the layer.
         """
 
-        self.state_dict()['{0}.weight'.format(layer_name)].copy_(new_weights)
+        self.state_dict()[f'{layer_name}.weight'].copy_(new_weights)
 
     def reset(self):
         """Resets the model back to its initial initialization."""
 
         for layer in self.layers:
-            self.state_dict()['{0}.weight'.format(layer.name)].copy_(layer.initial_weights)
-            self.state_dict()['{0}.bias'.format(layer.name)].copy_(layer.initial_biases)
+            self.state_dict()[f'{layer.name}.weight'].copy_(layer.initial_weights)
+            self.state_dict()[f'{layer.name}.bias'].copy_(layer.initial_biases)
 
     def move_to_device(self, device):
         """
@@ -213,6 +217,7 @@ class BaseModel(torch.nn.Module):
 
         raise NotImplementedError()
 
+
 def get_model_classes():
     """
     Retrieves the classes of all the available models.
@@ -227,7 +232,7 @@ def get_model_classes():
     model_modules = []
     for module_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '*.py')):
         module_name = os.path.splitext(os.path.basename(module_path))[0]
-        model_modules.append(__import__('lth.models.{0}'.format(module_name), fromlist=['']))
+        model_modules.append(__import__(f'lth.models.{module_name}', fromlist=['']))
 
     # Gets the model classes, which are all the classes in the models module and its sub-modules that inherit from BaseDataset
     model_classes = []
@@ -238,6 +243,7 @@ def get_model_classes():
 
     # Returns the list of model classes
     return model_classes
+
 
 def get_model_ids():
     """
@@ -255,6 +261,7 @@ def get_model_ids():
         if hasattr(model_class, 'model_id'):
             model_ids.append(model_class.model_id)
     return model_ids
+
 
 def create_model(id_of_model, input_size, number_of_input_channels, number_of_classes):
     """
@@ -288,7 +295,7 @@ def create_model(id_of_model, input_size, number_of_input_channels, number_of_cl
         if hasattr(model_class, 'model_id') and model_class.model_id == id_of_model:
             found_model_class = model_class
     if found_model_class is None:
-        raise ValueError('The model with the name "{0}" could not be found.'.format(id_of_model))
+        raise ValueError(f'The model with the name "{id_of_model}" could not be found.')
 
     # Creates the model and returns it
     return found_model_class(input_size, number_of_input_channels, number_of_classes)

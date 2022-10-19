@@ -6,6 +6,7 @@ import torchvision
 from . import dataset_id
 from . import BaseDataset
 
+
 @dataset_id('cifar10')
 class Cifar10(BaseDataset):
     """Represents the CIFAR-10 dataset."""

@@ -9,6 +9,7 @@ import traceback
 
 from lth.commands import get_command_descriptors, get_command
 
+
 class Application:
     """Represents the lottery ticket hypothesis application."""
 

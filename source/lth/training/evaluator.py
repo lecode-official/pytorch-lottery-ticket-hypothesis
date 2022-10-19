@@ -5,6 +5,7 @@ import logging
 import tqdm
 import torch
 
+
 class Evaluator:
     """Represents a standard evaluation procedure, which evaluates a model on the complete test split of the dataset and reports the accuracy."""
 
@@ -32,12 +33,12 @@ class Evaluator:
 
             # Checks if CUDA is available, in that case the evaluation is performed on the first GPU on the system, otherwise the CPU is used
             is_cuda_available = torch.cuda.is_available()
-            device = torch.device('cuda:0' if is_cuda_available else 'cpu')
+            device = torch.device('cuda:0' if is_cuda_available else 'cpu')  # pylint: disable=no-member
 
             # Transfers the model to the selected device
             self.model.to(device)
 
-            # Puts the model into evaluation mode (this is important for some layers, like dropout and BatchNorm which have different bahavior during
+            # Puts the model into evaluation mode (this is important for some layers, like dropout and BatchNorm which have different behavior during
             # training and evaluation)
             self.model.eval()
 
@@ -50,7 +51,7 @@ class Evaluator:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 outputs = self.model(inputs)
-                _, predicted_classes = torch.max(outputs, 1)
+                _, predicted_classes = torch.max(outputs, 1)  # pylint: disable=no-member
                 correctness = (predicted_classes == labels).squeeze()
                 for is_correct in correctness:
                     correct_predictions += is_correct.item()

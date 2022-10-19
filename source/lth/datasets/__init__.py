@@ -4,6 +4,7 @@ import os
 import glob
 import inspect
 
+
 def dataset_id(new_id):
     """A decorator, which adds a dataset ID to a dataset class."""
 
@@ -12,8 +13,10 @@ def dataset_id(new_id):
         return dataset_class
     return decorator
 
+
 class BaseDataset:
     """Represents the base class for all datasets."""
+
 
 def get_dataset_classes():
     """
@@ -29,7 +32,7 @@ def get_dataset_classes():
     dataset_modules = []
     for module_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), '*.py')):
         module_name = os.path.splitext(os.path.basename(module_path))[0]
-        dataset_modules.append(__import__('lth.datasets.{0}'.format(module_name), fromlist=['']))
+        dataset_modules.append(__import__(f'lth.datasets.{module_name}', fromlist=['']))
 
     # Gets the dataset classes, which are all the classes in the dataset module and its sub-modules that inherit from BaseDataset
     dataset_classes = []
@@ -40,6 +43,7 @@ def get_dataset_classes():
 
     # Returns the list of dataset classes
     return dataset_classes
+
 
 def get_dataset_ids():
     """
@@ -57,6 +61,7 @@ def get_dataset_ids():
         if hasattr(dataset_class, 'dataset_id'):
             dataset_ids.append(dataset_class.dataset_id)
     return dataset_ids
+
 
 def create_dataset(id_of_dataset, dataset_path, batch_size):
     """
@@ -88,7 +93,7 @@ def create_dataset(id_of_dataset, dataset_path, batch_size):
         if hasattr(dataset_class, 'dataset_id') and dataset_class.dataset_id == id_of_dataset:
             found_dataset_class = dataset_class
     if found_dataset_class is None:
-        raise ValueError('The dataset with the name "{0}" could not be found.'.format(id_of_dataset))
+        raise ValueError(f'The dataset with the name "{id_of_dataset}" could not be found.')
 
     # Creates the dataset and returns it
     return found_dataset_class(dataset_path, batch_size)

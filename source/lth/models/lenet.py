@@ -5,8 +5,9 @@ import torch
 from . import model_id
 from . import BaseModel
 
-@model_id('lenet-300-100') # pylint: disable=invalid-name
-class LeNet_300_100(BaseModel):
+
+@model_id('lenet-300-100')
+class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
@@ -25,7 +26,7 @@ class LeNet_300_100(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(LeNet_300_100, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'LeNet-300-100'
@@ -81,6 +82,7 @@ class LeNet_300_100(BaseModel):
         # Returns the result
         return x
 
+
 @model_id('lenet5')
 class LeNet5(BaseModel):
     """
@@ -107,7 +109,7 @@ class LeNet5(BaseModel):
         """
 
         # Invokes the constructor of the base class
-        super(LeNet5, self).__init__()
+        super().__init__()
 
         # Exposes some information about the model architecture
         self.name = 'LeNet5'

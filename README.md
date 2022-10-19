@@ -55,18 +55,6 @@ python -m lth <command> <arguments...>
 conda deactivate
 ```
 
-When you install new packages, please update the environment file. Please make sure to either create a new environment file for your operating system and platform (i.e., choose a moniker in the format `<operating-system>-<architecture>`, e.g., `windows-amd64`), or overwrite the one that matches your operating system and platform. Ideally, try to update all supported environments if you plan on creating a pull request. The environment file can be updated like so:
-
-```bash
-conda env export | grep -v "prefix" > environment.<operating-system>-<architecture>.yaml
-```
-
-When someone else has added or removed dependencies from the environment, you have to update your environment from the Anaconda environment file as well. Again, please make sure to select the environment that fits your operating system and platform. The `--prune` switch makes sure that dependencies that have been removed from the Anaconda environment file are uninstalled:
-
-```bash
-conda env update --file environment.<operating-system>-<architecture>.yaml --prune
-```
-
 ## Finding Winning Tickets
 
 The project consists of a single Python module called `lth`, which offers commands for performing experiments. Finding a winning ticket for a model and a dataset can be done using the `find-ticket` command. For example, the following command performs 20 iterations of the Lottery Ticket algorithm on LeNet-300-100 and MNIST, where each training step consists of 50 epochs:
@@ -98,6 +86,27 @@ python -m lth --help # For general information about the application as well as 
 python -m lth <command-name> --help # For information about the specified command
 ```
 
+## Development
+
+When you install new packages during development, please update the environment file. Please make sure to either create a new environment file for your operating system and platform (i.e., choose a moniker in the format `<operating-system>-<architecture>`, e.g., `windows-amd64`), or overwrite the one that matches your operating system and platform. Ideally, try to update all supported environments if you plan on creating a pull request. The environment file can be updated like so:
+
+```bash
+conda env export | grep -v "prefix" > environment.<operating-system>-<architecture>.yaml
+```
+
+When someone else has added or removed dependencies from the environment, you have to update your environment from the Anaconda environment file as well. Again, please make sure to select the environment that fits your operating system and platform. The `--prune` switch makes sure that dependencies that have been removed from the Anaconda environment file are uninstalled:
+
+```bash
+conda env update --file environment.<operating-system>-<architecture>.yaml --prune
+```
+
+The code in this repository follows most of the rules of PyLint, as well as PyCodeStyle (see `.pylintrc` and `.pycodestyle`, which contain the settings for both of them). Before committing any changes, adherence to these rules must be checked as follows:
+
+```bash
+pylint lth
+pycodestyle --config=.pycodestyle lth
+```
+
 ## Contributing
 
 If you would like to contribute, there are multiple ways you can help out. If you find a bug or have a feature request, please feel free to open an issue on [GitHub](https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis/issues). If you want to contribute code, please fork the repository and use a feature branch. Pull requests are always welcome. Before forking, please open an issue where you describe what you want to do. This helps to align your ideas with mine and may prevent you from doing work, that I am already planning on doing. If you have contributed to the project, please add yourself to the [contributors list](CONTRIBUTORS.md) and add all your changes to the [changelog](CHANGELOG.md). To help speed up the merging of your pull request, please comment and document your code extensively and try to emulate the coding style of the project.
@@ -105,6 +114,22 @@ If you would like to contribute, there are multiple ways you can help out. If yo
 ## License
 
 The code in this project is licensed under the MIT license. For more information see the [license file](LICENSE).
+
+## Cite this Repository
+
+If you use this software in your research, please cite it like this or use the "Cite this repository" widget in the about section.
+
+```bibtex
+@software{Neumann_Lottery_Ticket_Hypothesis_2022,
+    author = {Neumann, David},
+    license = {MIT},
+    month = {10},
+    title = {{Lottery Ticket Hypothesis}},
+    url = {https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis},
+    version = {0.1.0},
+    year = {2022}
+}
+```
 
 ## References
 
@@ -124,35 +149,22 @@ The code in this project is licensed under the MIT license. For more information
 
 <a id="8">**[8]**</a> Hattie Zhou, Janice Lan, Rosanne Liu, and Jason Yosinski. "Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask". In: Advances in Neural Information Processing Systems. Ed. by H. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alch ́e-Buc, E. Fox, and R. Garnett. Vol. 32. Curran Associates, Inc., 2019. url: https://proceedings.neurips.cc/paper/2019/file/113d7a76ffceca1bb350bfe145467c6-Paper.pdf.
 
-## Cite this Repository
-
-If you use this software in your research, please cite it like this or use the "Cite this repository" widget in the about section.
-
-```bibtex
-@software{Neumann_Lottery_Ticket_Hypothesis_2022,
-    author = {Neumann, David},
-    license = {MIT},
-    month = {10},
-    title = {{Lottery Ticket Hypothesis}},
-    url = {https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis},
-    version = {0.1.0},
-    year = {2022}
-}
-```
-
 ## To-Do's
 
-1. Rename the `find-ticket` command to `find-winning-ticket`
-2. Rename `lenet5` to `lenet-5`
-3. Add proper linting
-4. Make it possible to redo all of the experiments from the original paper
-5. Implement the models that were used in the paper
-6. Add support for different mask-0 and mask-1 actions
-7. Implement the ResNet-18 model
-8. Intelligently retain model checkpoint files
-9. Extensively log hyperparameters and training statistics
-10. The names of the VGG networks seems to be wrong, they should be renamed
-11. General clean up, so that the project can be made public
-12. Perform extensive experiments on all supported models and datasets and record the results in the read me
-13. Add support for macOS on ARM64
-14. Add support for plotting training statistics
+1. Add linting and fix all linter warnings
+2. Change the style of the Python doc strings
+3. Add type hinting
+4. Rename the `find-ticket` command to `find-winning-ticket`
+5. Rename `lenet5` to `lenet-5`
+6. Add proper linting
+7. Make it possible to redo all of the experiments from the original paper
+8. Implement the models that were used in the paper
+9. Add support for different mask-0 and mask-1 actions
+10. Implement the ResNet-18 model
+11. Intelligently retain model checkpoint files
+12. Extensively log hyperparameters and training statistics
+13. The names of the VGG networks seems to be wrong, they should be renamed
+14. General clean up, so that the project can be made public
+15. Perform extensive experiments on all supported models and datasets and record the results in the read me
+16. Add support for macOS on ARM64
+17. Add support for plotting training statistics

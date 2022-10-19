@@ -5,6 +5,7 @@ import logging
 import tqdm
 import torch
 
+
 class Trainer:
     """Represents a standard training for training a neural network model."""
 
@@ -38,16 +39,16 @@ class Trainer:
 
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
         if torch.cuda.is_available():
-            device = torch.device('cuda:0')
+            device = torch.device('cuda:0')  # pylint: disable=no-member
             self.logger.info('Running on the GPU (%s).', torch.cuda.get_device_name(device=device))
         else:
-            device = torch.device('cpu')
+            device = torch.device('cpu')  # pylint: disable=no-member
             self.logger.info('Running on the CPU.')
 
         # Transfers the model to the selected device
         self.model.move_to_device(device)
 
-        # Puts the model in training mode (this is important for some layers, like dropout and BatchNorm which have different bahavior during training
+        # Puts the model in training mode (this is important for some layers, like dropout and BatchNorm which have different behavior during training
         # and evaluation)
         self.model.train()
 
@@ -61,7 +62,7 @@ class Trainer:
 
             # Cycles through all batches in the dataset and trains the neural network
             cumulative_loss = 0
-            for batch in tqdm.tqdm(self.dataset.training_split, desc='Epoch {0}'.format(epoch + 1), unit='batch'):
+            for batch in tqdm.tqdm(self.dataset.training_split, desc=f'Epoch {epoch + 1}', unit='batch'):
 
                 # Gets the current training batch
                 inputs, labels = batch
