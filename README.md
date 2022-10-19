@@ -68,7 +68,7 @@ Currently the following models and datasets are supported:
 **Models:**
 
 - LeNet-300-100 [[4]](#4) (`lenet-300-100`)
-- LeNet-5 [[4]](#4) (`lenet5`)
+- LeNet-5 [[4]](#4) (`lenet-5`)
 - VGG5 [[7]](#7) (`vgg5`)
 - VGG7 [[7]](#7) (`vgg7`)
 - VGG9 [[7]](#7) (`vgg9`)
@@ -154,17 +154,16 @@ If you use this software in your research, please cite it like this or use the "
 1. Add linting and fix all linter warnings
 2. Change the style of the Python doc strings
 3. Add type hinting
-4. Rename the `find-ticket` command to `find-winning-ticket`
-5. Rename `lenet5` to `lenet-5`
-6. Add proper linting
-7. Make it possible to redo all of the experiments from the original paper
-8. Implement the models that were used in the paper
-9. Add support for different mask-0 and mask-1 actions
-10. Implement the ResNet-18 model
-11. Intelligently retain model checkpoint files
-12. Extensively log hyperparameters and training statistics
-13. The names of the VGG networks seems to be wrong, they should be renamed
-14. General clean up, so that the project can be made public
-15. Perform extensive experiments on all supported models and datasets and record the results in the read me
-16. Add support for macOS on ARM64
-17. Add support for plotting training statistics
+4. Add proper linting
+5. Make it possible to redo all of the experiments from the original paper
+6. Implement the models that were used in the paper
+7. Add support for different mask-0 and mask-1 actions
+8.  Implement the ResNet-18 model
+9.  Intelligently retain model checkpoint files
+10. Extensively log hyperparameters and training statistics
+11. The names of the VGG networks seems to be wrong, they should be renamed
+12. General clean up, so that the project can be made public
+13. Perform extensive experiments on all supported models and datasets and record the results in the read me
+14. Add support for macOS on ARM64
+15. Add support for plotting training statistics
+16. Make it possible to gracefully abort the training process

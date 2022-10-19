@@ -35,7 +35,7 @@ def get_defaults(model_name, dataset_name, learning_rate, batch_size, number_of_
 
     if model_name == 'lenet-300-100' and dataset_name == 'mnist':
         default_learning_rate, default_batch_size, default_number_of_epochs = 1.2e-3, 60, 50
-    elif model_name == 'lenet5' and dataset_name == 'mnist':
+    elif model_name == 'lenet-5' and dataset_name == 'mnist':
         default_learning_rate, default_batch_size, default_number_of_epochs = 1.2e-3, 60, 50
     elif model_name == 'vgg5' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 2e-4, 60, 20

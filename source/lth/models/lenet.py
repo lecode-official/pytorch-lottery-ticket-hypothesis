@@ -12,7 +12,7 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
-        Initializes a new LeNet5 instance.
+        Initializes a new LeNet-5 instance.
 
         Parameters
         ----------
@@ -83,16 +83,16 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
         return x
 
 
-@model_id('lenet5')
+@model_id('lenet-5')
 class LeNet5(BaseModel):
     """
-    Represents the classical convolutional neural network architecture LeNet5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
+    Represents the classical convolutional neural network architecture LeNet-5 introduced by Yann LeCun et al. in their paper "Gradient-Based Learning
     Applied to Document Recognition.", where it was used for character recognition.
     """
 
     def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
         """
-        Initializes a new LeNet5 instance.
+        Initializes a new LeNet-5 instance.
 
         Parameters
         ----------
@@ -112,7 +112,7 @@ class LeNet5(BaseModel):
         super().__init__()
 
         # Exposes some information about the model architecture
-        self.name = 'LeNet5'
+        self.name = 'LeNet-5'
         self.pruning_rates = {
             'convolution_1': 0.1,
             'convolution_2': 0.1,
