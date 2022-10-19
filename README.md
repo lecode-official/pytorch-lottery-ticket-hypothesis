@@ -159,7 +159,7 @@ If you use this software in your research, please cite it like this or use the "
 6. Make it possible to gracefully abort the training process
 7. Add support for macOS on ARM64
 8. Implement the ResNet-18 model
-9.  Perform extensive experiments on all supported models and datasets and record the results in the read me
+9. Perform extensive experiments on all supported models and datasets and record the results in the read me
 10. Make it possible to redo all of the experiments from the original paper
 11. Implement the models that were used in the paper
 12. Add support for different mask-0 and mask-1 actions
