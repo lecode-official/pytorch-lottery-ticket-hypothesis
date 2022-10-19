@@ -151,17 +151,16 @@ If you use this software in your research, please cite it like this or use the "
 
 ## To-Do's
 
-1. Simplify the getLogger methods calls
-2. The names of the VGG networks seems to be wrong, they should be renamed
-3. Intelligently retain model checkpoint files
-4. Extensively log hyperparameters and training statistics
-5. Add support for plotting training statistics
-6. Make it possible to gracefully abort the training process
-7. Add support for macOS on ARM64
-8. General clean up, so that the project can be made public
-9.  Add linting and fix all linter warnings
-10. Implement the ResNet-18 model
-11. Perform extensive experiments on all supported models and datasets and record the results in the read me
-12. Make it possible to redo all of the experiments from the original paper
-13. Implement the models that were used in the paper
-14. Add support for different mask-0 and mask-1 actions
+1. The names of the VGG networks seems to be wrong, they should be renamed
+2. Intelligently retain model checkpoint files
+3. Extensively log hyperparameters and training statistics
+4. Add support for plotting training statistics
+5. Make it possible to gracefully abort the training process
+6. Add support for macOS on ARM64
+7. General clean up, so that the project can be made public
+8.  Add linting and fix all linter warnings
+9.  Implement the ResNet-18 model
+10. Perform extensive experiments on all supported models and datasets and record the results in the read me
+11. Make it possible to redo all of the experiments from the original paper
+12. Implement the models that were used in the paper
+13. Add support for different mask-0 and mask-1 actions

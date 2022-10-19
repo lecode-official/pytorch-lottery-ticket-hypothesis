@@ -21,7 +21,7 @@ class Trainer:
 
         self.model = model
         self.dataset = dataset
-        self.logger = logging.getLogger('lth.training.trainer.Trainer')
+        self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
 
     def train(self, learning_rate: float, number_of_epochs: int) -> None:
         """Starts the training of the neural network.

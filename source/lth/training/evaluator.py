@@ -21,7 +21,7 @@ class Evaluator:
 
         self.model = model
         self.dataset = dataset
-        self.logger = logging.getLogger('lth.training.evaluator.Evaluator')
+        self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
 
     def evaluate(self) -> None:
         """Evaluates the model."""
