@@ -17,7 +17,7 @@ class Vgg5(BaseModel):
     convolutional layers.
     """
 
-    def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
+    def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
         """
         Initializes a new Vgg2 instance.
 
@@ -69,7 +69,7 @@ class Vgg5(BaseModel):
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 
@@ -116,7 +116,7 @@ class Vgg7(BaseModel):
     convolutional layers.
     """
 
-    def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
+    def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
         """
         Initializes a new Vgg4 instance.
 
@@ -183,7 +183,7 @@ class Vgg7(BaseModel):
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 
@@ -241,7 +241,7 @@ class Vgg9(BaseModel):
     convolutional layers.
     """
 
-    def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
+    def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
         """
         Initializes a new Vgg6 instance.
 
@@ -323,7 +323,7 @@ class Vgg9(BaseModel):
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 
@@ -394,7 +394,7 @@ class Vgg17(BaseModel):
     performed instead of max pooling. This is the same as in the original paper by Frankle et al.
     """
 
-    def __init__(self, input_size=(32, 32), number_of_input_channels=3, number_of_classes=10):
+    def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
         """
         Initializes a new Vgg19 instance.
 
@@ -544,7 +544,7 @@ class Vgg17(BaseModel):
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 

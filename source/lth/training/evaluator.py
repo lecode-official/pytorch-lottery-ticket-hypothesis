@@ -5,11 +5,13 @@ import logging
 import tqdm
 import torch
 
+from lth.datasets import BaseDataset
+
 
 class Evaluator:
     """Represents a standard evaluation procedure, which evaluates a model on the complete test split of the dataset and reports the accuracy."""
 
-    def __init__(self, model, dataset):
+    def __init__(self, model: torch.nn.Module, dataset: BaseDataset) -> None:
         """
         Initializes a new Evaluator instance.
 
@@ -25,7 +27,7 @@ class Evaluator:
         self.dataset = dataset
         self.logger = logging.getLogger('lth.training.evaluator.Evaluator')
 
-    def evaluate(self):
+    def evaluate(self) -> None:
         """Evaluates the model."""
 
         # Since we are only evaluating the model, the gradient does not have to be computed

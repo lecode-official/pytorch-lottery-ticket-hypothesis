@@ -3,12 +3,13 @@
 import os
 import glob
 import inspect
+from typing import Callable
 
 
-def dataset_id(new_id):
+def dataset_id(new_id: str) -> Callable[[type], type]:
     """A decorator, which adds a dataset ID to a dataset class."""
 
-    def decorator(dataset_class):
+    def decorator(dataset_class: type) -> type:
         dataset_class.dataset_id = new_id
         return dataset_class
     return decorator
@@ -18,7 +19,7 @@ class BaseDataset:
     """Represents the base class for all datasets."""
 
 
-def get_dataset_classes():
+def get_dataset_classes() -> list[type]:
     """
     Retrieves the classes of all the available datasets.
 
@@ -45,7 +46,7 @@ def get_dataset_classes():
     return dataset_classes
 
 
-def get_dataset_ids():
+def get_dataset_ids() -> list[str]:
     """
     Retrieves the IDs of all available datasets.
 
@@ -63,7 +64,7 @@ def get_dataset_ids():
     return dataset_ids
 
 
-def create_dataset(id_of_dataset, dataset_path, batch_size):
+def create_dataset(id_of_dataset: str, dataset_path: str, batch_size: int) -> BaseDataset:
     """
     Creates the specified dataset.
 

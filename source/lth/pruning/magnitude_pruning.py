@@ -13,7 +13,7 @@ class LayerWiseMagnitudePruner:
     Neural Networks".
     """
 
-    def __init__(self, model):
+    def __init__(self, model: torch.nn.Module) -> None:
         """
         Initializes a new LayerWiseMagnitudePruner instance.
 
@@ -26,7 +26,7 @@ class LayerWiseMagnitudePruner:
         self.model = model
         self.logger = logging.getLogger('lth.pruning.magnitude_pruning.LayerWiseMagnitudePruner')
 
-    def create_pruning_masks(self):
+    def create_pruning_masks(self) -> None:
         """
         Generates the pruning masks for all layers of the model. The pruning is not performed in-place on the layers of the model itself but a pruning
         mask is created for each layer (of the same shape as the layer), which has 0 values for all weights in the layer that were pruned and values
@@ -71,7 +71,7 @@ class LayerWiseMagnitudePruner:
         # Logs out a success message
         self.logger.info('Finished generating pruning mask for model %s.', self.model.name)
 
-    def apply_pruning_masks(self):
+    def apply_pruning_masks(self) -> None:
         """Applies the pruning masks generated using create_pruning_masks. This is effectively the actual pruning."""
 
         # Applies the pruning masks for all layers

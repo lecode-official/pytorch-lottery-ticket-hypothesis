@@ -10,7 +10,7 @@ from . import BaseModel
 class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
     """Represents a much simpler LeNet variant, which has no convolutional layers."""
 
-    def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
+    def __init__(self, input_size: tuple = (28, 28), number_of_input_channels: int = 1, number_of_classes: int = 10) -> None:
         """
         Initializes a new LeNet-5 instance.
 
@@ -54,7 +54,7 @@ class LeNet_300_100(BaseModel):  # pylint: disable=invalid-name
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 
@@ -90,7 +90,7 @@ class LeNet5(BaseModel):
     Applied to Document Recognition.", where it was used for character recognition.
     """
 
-    def __init__(self, input_size=(28, 28), number_of_input_channels=1, number_of_classes=10):
+    def __init__(self, input_size: tuple = (28, 28), number_of_input_channels: int = 1, number_of_classes: int = 10):
         """
         Initializes a new LeNet-5 instance.
 
@@ -145,7 +145,7 @@ class LeNet5(BaseModel):
         # Initializes the model
         self.initialize()
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network.
 

@@ -151,19 +151,17 @@ If you use this software in your research, please cite it like this or use the "
 
 ## To-Do's
 
-1. Add linting and fix all linter warnings
-2. Change the style of the Python doc strings
-3. Add type hinting
-4. Add proper linting
-5. Make it possible to redo all of the experiments from the original paper
-6. Implement the models that were used in the paper
-7. Add support for different mask-0 and mask-1 actions
-8.  Implement the ResNet-18 model
-9.  Intelligently retain model checkpoint files
-10. Extensively log hyperparameters and training statistics
-11. The names of the VGG networks seems to be wrong, they should be renamed
-12. General clean up, so that the project can be made public
-13. Perform extensive experiments on all supported models and datasets and record the results in the read me
-14. Add support for macOS on ARM64
-15. Add support for plotting training statistics
-16. Make it possible to gracefully abort the training process
+1. Change the style of the Python doc strings
+2. The names of the VGG networks seems to be wrong, they should be renamed
+3. Intelligently retain model checkpoint files
+4. Extensively log hyperparameters and training statistics
+5. Add support for plotting training statistics
+6. Make it possible to gracefully abort the training process
+7. Add support for macOS on ARM64
+8. General clean up, so that the project can be made public
+9.  Add linting and fix all linter warnings
+10. Implement the ResNet-18 model
+11. Perform extensive experiments on all supported models and datasets and record the results in the read me
+12. Make it possible to redo all of the experiments from the original paper
+13. Implement the models that were used in the paper
+14. Add support for different mask-0 and mask-1 actions

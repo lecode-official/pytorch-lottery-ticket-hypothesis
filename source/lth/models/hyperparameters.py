@@ -1,7 +1,7 @@
 """Represents a module, which contains hyperparameter defaults for several model and dataset combinations."""
 
 
-def get_defaults(model_name, dataset_name, learning_rate, batch_size, number_of_epochs):
+def get_defaults(model_name: str, dataset_name: str, learning_rate: float, batch_size: int, number_of_epochs: int) -> tuple[float, int, int]:
     """
     Retrieves recommended hyperparameters for the specified model and dataset combination.
 

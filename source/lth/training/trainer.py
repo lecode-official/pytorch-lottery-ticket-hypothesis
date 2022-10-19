@@ -5,11 +5,13 @@ import logging
 import tqdm
 import torch
 
+from lth.datasets import BaseDataset
+
 
 class Trainer:
     """Represents a standard training for training a neural network model."""
 
-    def __init__(self, model, dataset):
+    def __init__(self, model: torch.nn.Module, dataset: BaseDataset) -> None:
         """
         Initializes a new Trainer instance.
 
@@ -25,7 +27,7 @@ class Trainer:
         self.dataset = dataset
         self.logger = logging.getLogger('lth.training.trainer.Trainer')
 
-    def train(self, learning_rate, number_of_epochs):
+    def train(self, learning_rate: float, number_of_epochs: int) -> None:
         """
         Starts the training of the neural network.
 

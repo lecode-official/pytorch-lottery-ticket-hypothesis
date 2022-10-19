@@ -4,14 +4,17 @@ import os
 import glob
 import inspect
 from enum import Enum
+from typing import Callable, Union
 
 import torch
 
+from lth.datasets import BaseDataset
 
-def model_id(new_id):
+
+def model_id(new_id: str) -> Callable[[type], type]:
     """A decorator, which adds a model ID to a model class."""
 
-    def decorator(model_class):
+    def decorator(model_class: type) -> type:
         model_class.model_id = new_id
         return model_class
     return decorator
@@ -27,7 +30,15 @@ class LayerKind(Enum):
 class Layer:
     """Represents a single prunable layer in the neural network."""
 
-    def __init__(self, name, kind, weights, biases, initial_weights, initial_biases, pruning_mask):
+    def __init__(
+            self,
+            name: str,
+            kind: LayerKind,
+            weights: torch.nn.Parameter,
+            biases: torch.nn.Parameter,
+            initial_weights: torch.Tensor,
+            initial_biases: torch.Tensor,
+            pruning_mask: torch.Tensor) -> None:
         """
         Initializes a new Layer instance.
 
@@ -61,7 +72,7 @@ class Layer:
 class BaseModel(torch.nn.Module):
     """Represents the base class for all models."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initializes a new BaseModel instance. Since this is a base class, it should never be called directly."""
 
         # Invokes the constructor of the base class
@@ -70,7 +81,7 @@ class BaseModel(torch.nn.Module):
         # Initializes some class members
         self.layers = None
 
-    def initialize(self):
+    def initialize(self) -> None:
         """
         Initializes the model. It initializes the weights of the model using Xavier Normal (equivalent to Gaussian Glorot used in the original Lottery
         Ticket Hypothesis paper). It also creates an initial pruning mask for the layers of the model. These are initialized with all ones. A pruning
@@ -119,7 +130,7 @@ class BaseModel(torch.nn.Module):
             # Adds the layer to the internal list of layers
             self.layers.append(Layer(layer_name, layer_kind, weights, biases, initial_weights, initial_biases, pruning_mask))
 
-    def get_layer_names(self):
+    def get_layer_names(self) -> list[str]:
         """
         Retrieves the internal names of all the layers of the model.
 
@@ -134,7 +145,7 @@ class BaseModel(torch.nn.Module):
             layer_names.append(layer.name)
         return layer_names
 
-    def get_layer(self, layer_name):
+    def get_layer(self, layer_name: str) -> Layer:
         """
         Retrieves the layer of the model with the specified name.
 
@@ -159,7 +170,7 @@ class BaseModel(torch.nn.Module):
                 return layer
         raise LookupError(f'The specified layer "{layer_name}" does not exist.')
 
-    def update_layer_weights(self, layer_name, new_weights):
+    def update_layer_weights(self, layer_name: str, new_weights: torch.Tensor) -> None:
         """
         Updates the weights of the specified layer.
 
@@ -173,14 +184,14 @@ class BaseModel(torch.nn.Module):
 
         self.state_dict()[f'{layer_name}.weight'].copy_(new_weights)
 
-    def reset(self):
+    def reset(self) -> None:
         """Resets the model back to its initial initialization."""
 
         for layer in self.layers:
             self.state_dict()[f'{layer.name}.weight'].copy_(layer.initial_weights)
             self.state_dict()[f'{layer.name}.bias'].copy_(layer.initial_biases)
 
-    def move_to_device(self, device):
+    def move_to_device(self, device: Union[int, str, torch.device]) -> None:  # pylint: disable=no-member
         """
         Moves the model to the specified device.
 
@@ -199,7 +210,7 @@ class BaseModel(torch.nn.Module):
             layer.initial_biases = layer.initial_biases.to(device)
             layer.pruning_mask = layer.pruning_mask.to(device)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Performs the forward pass through the neural network. Since this is the base model, the method is not implemented and must be implemented in
         all classes that derive from the base model.
@@ -218,7 +229,7 @@ class BaseModel(torch.nn.Module):
         raise NotImplementedError()
 
 
-def get_model_classes():
+def get_model_classes() -> list[type]:
     """
     Retrieves the classes of all the available models.
 
@@ -245,7 +256,7 @@ def get_model_classes():
     return model_classes
 
 
-def get_model_ids():
+def get_model_ids() -> list[str]:
     """
     Retrieves the IDs of all available models.
 
@@ -263,7 +274,7 @@ def get_model_ids():
     return model_ids
 
 
-def create_model(id_of_model, input_size, number_of_input_channels, number_of_classes):
+def create_model(id_of_model: str, input_size: tuple, number_of_input_channels: int, number_of_classes: int) -> BaseDataset:
     """
     Creates the model with the specified name.
 
