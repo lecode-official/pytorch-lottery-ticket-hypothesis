@@ -26,13 +26,13 @@ def get_defaults(model_name: str, dataset_name: str, learning_rate: float, batch
         default_learning_rate, default_batch_size, default_number_of_epochs = 1.2e-3, 60, 50
     elif model_name == 'lenet-5' and dataset_name == 'mnist':
         default_learning_rate, default_batch_size, default_number_of_epochs = 1.2e-3, 60, 50
-    elif model_name == 'vgg5' and dataset_name == 'cifar10':
+    elif model_name == 'conv-2' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 2e-4, 60, 20
-    elif model_name == 'vgg7' and dataset_name == 'cifar10':
+    elif model_name == 'conv-4' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 3e-4, 60, 25
-    elif model_name == 'vgg9' and dataset_name == 'cifar10':
+    elif model_name == 'conv-6' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 3e-4, 60, 30
-    elif model_name == 'vgg17' and dataset_name == 'cifar10':
+    elif model_name == 'vgg19' and dataset_name == 'cifar10':
         default_learning_rate, default_batch_size, default_number_of_epochs = 3e-4, 64, 112
 
     learning_rate = learning_rate if learning_rate is not None else default_learning_rate

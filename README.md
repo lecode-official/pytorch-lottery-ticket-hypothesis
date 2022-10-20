@@ -69,10 +69,10 @@ Currently the following models and datasets are supported:
 
 - LeNet-300-100 [[4]](#4) (`lenet-300-100`)
 - LeNet-5 [[4]](#4) (`lenet-5`)
-- VGG5 [[7]](#7) (`vgg5`)
-- VGG7 [[7]](#7) (`vgg7`)
-- VGG9 [[7]](#7) (`vgg9`)
-- VGG17 [[7]](#7) (`vgg17`)
+- Conv-2 [[1]](#1) (`conv-2`)
+- Conv-4 [[1]](#1) (`conv-4`)
+- Conv-6 [[1]](#1) (`conv-6`)
+- VGG19 [[1](#1), [7](#7)] (`vgg19`)
 
 **Datasets:**
 
@@ -151,15 +151,13 @@ If you use this software in your research, please cite it like this or use the "
 
 ## To-Do's
 
-1. The names of the VGG networks seems to be wrong, they should be renamed
-2. General clean up, so that the project can be made public
-3. Intelligently retain model checkpoint files
-4. Extensively log hyperparameters and training statistics
-5. Add support for plotting training statistics
-6. Make it possible to gracefully abort the training process
-7. Add support for macOS on ARM64
-8. Implement the ResNet-18 model
-9. Perform extensive experiments on all supported models and datasets and record the results in the read me
-10. Make it possible to redo all of the experiments from the original paper
-11. Implement the models that were used in the paper
-12. Add support for different mask-0 and mask-1 actions
+1. Intelligently retain model checkpoint files
+2. Extensively log hyperparameters and training statistics
+3. Add support for plotting training statistics
+4. Make it possible to gracefully abort the training process
+5. Add support for macOS on ARM64
+6. Implement the ResNet-18 model
+7. Perform extensive experiments on all supported models and datasets and record the results in the read me
+8. Make it possible to redo all of the experiments from the original paper
+9. Add support for different mask-0 and mask-1 actions
+10. Make Dropout optional

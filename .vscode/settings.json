@@ -28,6 +28,7 @@
         "cifar",
         "CIFAR",
         "conda",
+        "conv",
         "Conv",
         "convolutional",
         "cuda",

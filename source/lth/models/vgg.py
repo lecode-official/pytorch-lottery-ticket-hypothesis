@@ -1,6 +1,7 @@
 """Represents a module that contains the multiple neural network models based on the VGG family of architectures first introduced by K. Simonyan and
 A. Zisserman in their paper "Very Deep Convolutional Networks for Large-Scale Image Recognition". VGG was named after Oxford's renowned Visual
-Geometry Group (VGG).
+Geometry Group (VGG). The three architectures, referred to as Conv-2, Conv-4, and Conv-6 are scaled down versions for the use with CIFAR-10 and were
+introduced by Frankle et al. in their paper "The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks".
 """
 
 import torch
@@ -9,14 +10,15 @@ from . import model_id
 from . import BaseModel
 
 
-@model_id('vgg5')
-class Vgg5(BaseModel):
-    """Represents a very small VGG-variant with only 5 weight layers. In the original paper by Frankle et al., this is referred to as Conv-2 as it has
-    2 convolutional layers.
+@model_id('conv-2')
+class Conv2(BaseModel):
+    """Represents a VGG-variant scaled down for CIFAR-10 with only 2 convolutional and 3 fully-connected layers, which was introduced by Frankle et
+    al. in their paper "The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks". They refer to this architecture as Conv-2, because
+    it has 2 convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """Initializes a new Vgg2 instance.
+        """Initializes a new Conv2 instance.
 
         Args:
             input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
@@ -31,7 +33,7 @@ class Vgg5(BaseModel):
         super().__init__()
 
         # Exposes some information about the model architecture
-        self.name = 'VGG5'
+        self.name = 'Conv-2'
         self.pruning_rates = {
             'convolution_1': 0.1,
             'convolution_2': 0.1,
@@ -98,14 +100,15 @@ class Vgg5(BaseModel):
         return x
 
 
-@model_id('vgg7')
-class Vgg7(BaseModel):
-    """Represents a small VGG-variant with only 7 weight layers. In the original paper by Frankle et al., this is referred to as Conv-4, as it has 4
-    convolutional layers.
+@model_id('conv-4')
+class Conv4(BaseModel):
+    """Represents a VGG-variant scaled down for CIFAR-10 with only 4 convolutional and 3 fully-connected layers, which was introduced by Frankle et
+    al. in their paper "The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks". They refer to this architecture as Conv-4, because
+    it has 4 convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """Initializes a new Vgg4 instance.
+        """Initializes a new Conv4 instance.
 
         Args:
             input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
@@ -120,7 +123,7 @@ class Vgg7(BaseModel):
         super().__init__()
 
         # Exposes some information about the model architecture
-        self.name = 'VGG7'
+        self.name = 'Conv-4'
         self.pruning_rates = {
             'convolution_1': 0.1,
             'convolution_2': 0.1,
@@ -213,14 +216,15 @@ class Vgg7(BaseModel):
         return x
 
 
-@model_id('vgg9')
-class Vgg9(BaseModel):
-    """Represents a small VGG-variant with only 9 weight layers. In the original paper by Frankle et al., this is referred to as Conv-6, as it has 6
-    convolutional layers.
+@model_id('conv-6')
+class Conv6(BaseModel):
+    """Represents a VGG-variant scaled down for CIFAR-10 with only 6 convolutional and 3 fully-connected layers, which was introduced by Frankle et
+    al. in their paper "The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks". They refer to this architecture as Conv-6, because
+    it has 6 convolutional layers.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
-        """Initializes a new Vgg6 instance.
+        """Initializes a new Conv6 instance.
 
         Args:
             input_size (tuple, optional): A tuple containing the edge lengths of the input images, which is the input size of the first convolution of
@@ -235,7 +239,7 @@ class Vgg9(BaseModel):
         super().__init__()
 
         # Exposes some information about the model architecture
-        self.name = 'VGG9'
+        self.name = 'Conv-6'
         self.pruning_rates = {
             'convolution_1': 0.15,
             'convolution_2': 0.15,
@@ -354,12 +358,13 @@ class Vgg9(BaseModel):
         return x
 
 
-@model_id('vgg17')
-class Vgg17(BaseModel):
-    """Represents a VGG-variant with 17 weight layers. In the original paper by Frankle et al. this is referred to as VGG19, because it is exactly as
-    VGG19 with the difference, that this version was adapted to CIFAR-10 and is therefore missing 2 fully-connected layers at the end, but it has 16
-    convolutional layers just as VGG19. Another difference to the original VGG19 is that after the last convolutional layer, an average pooling is
-    performed instead of max pooling. This is the same as in the original paper by Frankle et al.
+@model_id('vgg19')
+class Vgg19(BaseModel):
+    """Represents a VGG-variant, which was introduced by Frankle et al. in their paper "The Lottery Ticket Hypothesis: Finding Sparse, Trainable
+    Neural Networks". They refer to this architecture as VGG19, although it is not the same VGG19 architecture first introduced by K. Simonyan and A.
+    Zisserman in their paper "Very Deep Convolutional Networks for Large-Scale Image Recognition". This version was adapted to CIFAR-10 and is
+    therefore missing 2 fully-connected layers at the end, but it has the same 16 convolutional layers just as VGG19. Another difference to the
+    original VGG19 is that after the last convolutional layer, average pooling is performed instead of max pooling.
     """
 
     def __init__(self, input_size: tuple = (32, 32), number_of_input_channels: int = 3, number_of_classes: int = 10) -> None:
@@ -378,7 +383,7 @@ class Vgg17(BaseModel):
         super().__init__()
 
         # Exposes some information about the model architecture
-        self.name = 'VGG17'
+        self.name = 'VGG19'
         self.pruning_rates = {
             'convolution_1': 0.2,
             'convolution_2': 0.2,

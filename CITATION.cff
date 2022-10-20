@@ -24,7 +24,7 @@ keywords:
   - Lottery Ticket Hypothesis
   - Pruning
 version: 0.1.0
-date-released: 2022-10-19
+date-released: 2022-10-20
 license: MIT
 repository: https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis.git
 url: https://github.com/lecode-official/pytorch-lottery-ticket-hypothesis

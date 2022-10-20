@@ -8,8 +8,6 @@ from typing import Callable, Union
 
 import torch
 
-from lth.datasets import BaseDataset
-
 
 def model_id(new_id: str) -> Callable[[type], type]:
     """A decorator, which adds a model ID to a model class.
@@ -220,7 +218,7 @@ def get_model_classes() -> list[type]:
         module_name = os.path.splitext(os.path.basename(module_path))[0]
         model_modules.append(__import__(f'lth.models.{module_name}', fromlist=['']))
 
-    # Gets the model classes, which are all the classes in the models module and its sub-modules that inherit from BaseDataset
+    # Gets the model classes, which are all the classes in the models module and its sub-modules that inherit from BaseModel
     model_classes = []
     for module in model_modules:
         for _, module_class in inspect.getmembers(module, inspect.isclass):
@@ -246,7 +244,7 @@ def get_model_ids() -> list[str]:
     return model_ids
 
 
-def create_model(id_of_model: str, input_size: tuple, number_of_input_channels: int, number_of_classes: int) -> BaseDataset:
+def create_model(id_of_model: str, input_size: tuple, number_of_input_channels: int, number_of_classes: int) -> BaseModel:
     """Creates the model with the specified name.
 
     Args:
@@ -260,7 +258,7 @@ def create_model(id_of_model: str, input_size: tuple, number_of_input_channels: 
         ValueError: When the model with the specified name could not be found, an exception is raised.
 
     Returns:
-        BaseDataset: Returns the model with the specified name.
+        BaseModel: Returns the model with the specified name.
     """
 
     # Finds the class for the specified model, all models in this module must have a class-level variable containing a model identifier
