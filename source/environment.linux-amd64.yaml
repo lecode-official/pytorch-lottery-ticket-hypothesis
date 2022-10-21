@@ -59,6 +59,7 @@ dependencies:
   - pillow=9.2.0=py310hace64e9_1
   - pip=22.2.2=py310h06a4308_0
   - platformdirs=2.5.2=py310h06a4308_0
+  - pycodestyle=2.8.0=pyhd3eb1b0_0
   - pycparser=2.21=pyhd3eb1b0_0
   - pylint=2.14.5=py310h06a4308_0
   - pyopenssl=22.0.0=pyhd3eb1b0_0
@@ -82,5 +83,8 @@ dependencies:
   - wheel=0.37.1=pyhd3eb1b0_0
   - wrapt=1.14.1=py310h5eee18b_0
   - xz=5.2.6=h5eee18b_0
+  - yaml=0.2.5=h7b6447c_0
   - zlib=1.2.12=h5eee18b_3
   - zstd=1.5.2=ha4553b6_0
+  - pip:
+    - pyyaml==6.0
