@@ -58,17 +58,17 @@ class FindTicketCommand(BaseCommand):
         pruner = LayerWiseMagnitudePruner(model)
 
         # Creates the lottery ticket by repeatedly training and pruning the model
-        for iteration in range(command_line_arguments.number_of_iterations):
+        for iteration in range(1, command_line_arguments.number_of_iterations + 1):
 
             # Trains and evaluates the model
-            self.logger.info('Starting iteration %d...', iteration + 1)
-            trainer.train(learning_rate, number_of_epochs)
+            self.logger.info('Starting iteration %d...', iteration)
+            trainer.train(number_of_epochs)
             evaluator.evaluate()
 
             # Creates a new pruning, resets the model to its original weights, and applies the pruning mask, in the last iteration this does not need
             # to be performed as model is not trained again
-            if iteration + 1 < command_line_arguments.number_of_iterations:
+            if iteration < command_line_arguments.number_of_iterations:
                 pruner.create_pruning_masks()
                 model.reset()
                 pruner.apply_pruning_masks()
-            self.logger.info('Finished iteration %d.', iteration + 1)
+            self.logger.info('Finished iteration %d.', iteration)
