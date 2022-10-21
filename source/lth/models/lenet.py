@@ -2,8 +2,7 @@
 
 import torch
 
-from . import model_id
-from . import BaseModel
+from lth.models import BaseModel, model_id
 
 
 @model_id('lenet-300-100')

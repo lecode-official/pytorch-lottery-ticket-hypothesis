@@ -3,7 +3,7 @@
 __pycache__
 
 # Ignores downloaded datasets
-datasets
+/datasets
 
 # Ignores LaTeX files
 *.tex

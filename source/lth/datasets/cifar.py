@@ -3,8 +3,7 @@
 import torch
 import torchvision
 
-from . import dataset_id
-from . import BaseDataset
+from lth.datasets import BaseDataset, dataset_id
 
 
 @dataset_id('cifar10')

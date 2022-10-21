@@ -6,8 +6,7 @@ introduced by Frankle et al. in their paper "The Lottery Ticket Hypothesis: Find
 
 import torch
 
-from . import model_id
-from . import BaseModel
+from lth.models import BaseModel, model_id
 
 
 @model_id('conv-2')
