@@ -3,17 +3,15 @@
 import logging
 from argparse import Namespace
 
-from lth.models import create_model
 from lth.datasets import create_dataset
-from lth.training.trainer import Trainer
 from lth.commands.base import BaseCommand
-from lth.training.evaluator import Evaluator
-from lth.models.hyperparameters import get_defaults
-from lth.pruning.magnitude_pruning import LayerWiseMagnitudePruner
+from lth.training import Trainer, Evaluator
+from lth.pruning import LayerWiseMagnitudePruner
+from lth.models import hyperparameters, create_model
 
 
 class FindTicketCommand(BaseCommand):
-    """Represents a command for finding winning lottery tickets."""
+    """Represents the find-ticket command, which uses the iterative magnitude pruning algorithm to find winning lottery tickets."""
 
     def __init__(self) -> None:
         """Initializes a new FindTicketCommand instance."""
@@ -32,7 +30,7 @@ class FindTicketCommand(BaseCommand):
 
         # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
         # values that are known to work well
-        learning_rate, batch_size, number_of_epochs = get_defaults(
+        learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(
             command_line_arguments.model,
             command_line_arguments.dataset,
             command_line_arguments.learning_rate,
