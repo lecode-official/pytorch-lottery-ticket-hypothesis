@@ -1,4 +1,4 @@
-"""Contains the descriptor for the baseline command."""
+"""Contains the descriptor for the find-ticket command."""
 
 from argparse import ArgumentParser
 

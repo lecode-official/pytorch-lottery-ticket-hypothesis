@@ -1,4 +1,4 @@
-"""Contains the baseline command."""
+"""Contains the find-ticket command."""
 
 import logging
 from argparse import Namespace

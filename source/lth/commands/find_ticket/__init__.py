@@ -1,1 +1,1 @@
-""" that contains the find-ticket command."""
+"""A sub-package that contains the find-ticket command."""
