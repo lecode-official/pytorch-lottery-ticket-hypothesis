@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.0
+
+*Unreleased*
+
+- The trained models and their pruning masks are now saved to disk after each iteration of the iterative magnitude pruning algorithm
+
 ## v0.1.0
 
 *Released on October 20, 2022*
