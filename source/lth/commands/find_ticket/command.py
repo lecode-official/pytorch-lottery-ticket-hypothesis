@@ -1,7 +1,9 @@
 """Contains the find-ticket command."""
 
 import os
+import copy
 import logging
+from datetime import datetime
 from argparse import Namespace
 
 import torch
@@ -53,8 +55,10 @@ class FindTicketCommand(BaseCommand):
         self.logger.info('Selected %s to perform training...', device_name)
 
         # Loads the training and the test split of the dataset and creates the model
-        dataset = create_dataset(command_line_arguments.dataset, command_line_arguments.dataset_path, batch_size)
-        model = create_model(command_line_arguments.model, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
+        dataset_id = command_line_arguments.dataset
+        dataset = create_dataset(dataset_id, command_line_arguments.dataset_path, batch_size)
+        model_id = command_line_arguments.model
+        model = create_model(model_id, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
 
         # Logs out the model and dataset that is being trained on
         self.logger.info(
@@ -79,12 +83,36 @@ class FindTicketCommand(BaseCommand):
             self.logger.info('Starting iteration %d...', iteration)
             trainer = Trainer(device, model, dataset, learning_rate)
             trainer.train(number_of_epochs)
-            evaluator.evaluate()
+            accuracy = evaluator.evaluate()
 
-            # Creates a new pruning, resets the model to its original weights, and applies the pruning mask, in the last iteration this does not need
-            # to be performed as model is not trained again
-            if iteration < command_line_arguments.number_of_iterations:
-                pruner.create_pruning_masks()
-                model.reset()
-                pruner.apply_pruning_masks()
+            # Creates a new pruning mask
+            pruner.create_pruning_masks()
+
+            # Copies the model, so that the trained model can be saved later on
+            trained_model_state_dict = copy.deepcopy(model.state_dict())
+
+            # Resets the model to its original initialization and applies the pruning mask
+            model.reset()
+            sparsity = pruner.apply_pruning_masks()
+
+            # Saves the trained model, the lottery ticket, the pruning mask, and the original initialization to disk
+            current_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+            output_file_path = os.path.join(
+                command_line_arguments.output_path,
+                f'{current_date_time}-{model_id}-{dataset_id}-{iteration}-iteration-{sparsity:.2f}-sparsity-{accuracy:.2f}-accuracy.pt'
+            )
+            original_initialization = {}
+            pruning_mask = {}
+            for layer in model.layers:
+                original_initialization[f'{layer.name}.weight'] = layer.initial_weights
+                original_initialization[f'{layer.name}.bias'] = layer.initial_biases
+                pruning_mask[layer.name] = layer.pruning_mask
+            torch.save({
+                'trained_model': trained_model_state_dict,
+                'lottery_ticket': model.state_dict(),
+                'original_initialization': original_initialization,
+                'pruning_mask': pruning_mask
+            }, output_file_path)
+
+            # The iteration has finished
             self.logger.info('Finished iteration %d.', iteration)

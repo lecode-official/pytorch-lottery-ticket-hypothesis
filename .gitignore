@@ -5,6 +5,9 @@ __pycache__
 # Ignores downloaded datasets
 /datasets
 
+# Ignores experiment outputs
+output*
+
 # Ignores LaTeX files
 *.tex
 *.pdf
