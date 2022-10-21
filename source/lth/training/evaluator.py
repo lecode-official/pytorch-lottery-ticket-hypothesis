@@ -1,6 +1,7 @@
 """Evaluation of trained neural network models."""
 
 import logging
+from typing import Union
 
 import tqdm
 import torch
@@ -11,30 +12,31 @@ from lth.datasets import BaseDataset
 class Evaluator:
     """Represents a standard evaluation procedure, which evaluates a model on the complete test split of the dataset and reports the accuracy."""
 
-    def __init__(self, model: torch.nn.Module, dataset: BaseDataset) -> None:
+    def __init__(self, device: Union[int, str, torch.device], model: torch.nn.Module, dataset: BaseDataset) -> None:  # pylint: disable=no-member
         """Initializes a new Evaluator instance.
 
         Args:
+            device (Union[int, str, torch.device]): The device on which the validation is to be performed.
             model (torch.nn.Module): The neural network model that is to be evaluated.
             dataset (BaseDataset): The dataset on which the neural network model is to be evaluated.
         """
 
+        # Stores the arguments for later use
+        self.device = device
         self.model = model
         self.dataset = dataset
+
+        # Initializes the logger
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
+
+        # Makes sure that the model is on the specified device
+        self.model.to(self.device)
 
     def evaluate(self) -> None:
         """Evaluates the model."""
 
         # Since we are only evaluating the model, the gradient does not have to be computed
         with torch.no_grad():
-
-            # Checks if CUDA is available, in that case the evaluation is performed on the first GPU on the system, otherwise the CPU is used
-            is_cuda_available = torch.cuda.is_available()
-            device = torch.device('cuda:0' if is_cuda_available else 'cpu')  # pylint: disable=no-member
-
-            # Transfers the model to the selected device
-            self.model.to(device)
 
             # Puts the model into evaluation mode (this is important for some layers, like dropout and BatchNorm which have different behavior during
             # training and evaluation)
@@ -46,8 +48,8 @@ class Evaluator:
             number_of_predictions = 0
             for batch in tqdm.tqdm(self.dataset.test_split, unit='batch'):
                 inputs, labels = batch
-                inputs = inputs.to(device)
-                labels = labels.to(device)
+                inputs = inputs.to(self.device, non_blocking=True)
+                labels = labels.to(self.device, non_blocking=True)
                 outputs = self.model(inputs)
                 _, predicted_classes = torch.max(outputs, 1)  # pylint: disable=no-member
                 correctness = (predicted_classes == labels).squeeze()

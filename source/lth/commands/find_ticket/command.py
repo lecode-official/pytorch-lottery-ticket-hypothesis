@@ -3,6 +3,8 @@
 import logging
 from argparse import Namespace
 
+import torch
+
 from lth.datasets import create_dataset
 from lth.commands.base import BaseCommand
 from lth.training import Trainer, Evaluator
@@ -38,6 +40,14 @@ class FindTicketCommand(BaseCommand):
             command_line_arguments.number_of_epochs
         )
 
+        # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
+        device = 'cpu'
+        device_name = 'CPU'
+        if torch.cuda.is_available():
+            device = 'cuda'
+            device_name = torch.cuda.get_device_name(device)
+        self.logger.info('Selected %s to perform training...', device_name)
+
         # Loads the training and the test split of the dataset and creates the model
         dataset = create_dataset(command_line_arguments.dataset, command_line_arguments.dataset_path, batch_size)
         model = create_model(command_line_arguments.model, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
@@ -52,9 +62,10 @@ class FindTicketCommand(BaseCommand):
             number_of_epochs
         )
 
-        # Creates the trainer, the evaluator, and the pruner for the lottery ticket creation
-        trainer = Trainer(model, dataset)
-        evaluator = Evaluator(model, dataset)
+        # Creates the evaluator for the model
+        evaluator = Evaluator(device, model, dataset)
+
+        # Creates the pruner for the lottery ticket creation
         pruner = LayerWiseMagnitudePruner(model)
 
         # Creates the lottery ticket by repeatedly training and pruning the model
@@ -62,6 +73,7 @@ class FindTicketCommand(BaseCommand):
 
             # Trains and evaluates the model
             self.logger.info('Starting iteration %d...', iteration)
+            trainer = Trainer(device, model, dataset, learning_rate)
             trainer.train(number_of_epochs)
             evaluator.evaluate()
 
