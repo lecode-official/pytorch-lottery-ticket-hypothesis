@@ -1,5 +1,6 @@
 """Contains the find-ticket command."""
 
+import os
 import logging
 from argparse import Namespace
 
@@ -29,6 +30,9 @@ class FindTicketCommand(BaseCommand):
         Args:
             command_line_arguments (Namespace): The parsed command line arguments.
         """
+
+        # Makes sure that the output directory exists
+        os.makedirs(command_line_arguments.output_path, exist_ok=True)
 
         # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
         # values that are known to work well
