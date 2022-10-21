@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from argparse import Namespace
 
+import yaml
 import torch
 
 from lth.datasets import create_dataset
@@ -38,13 +39,28 @@ class FindTicketCommand(BaseCommand):
 
         # Determines the hyperparameters (if the user did not specify them as command line parameters, then they default to model and dataset specific
         # values that are known to work well
+        model_id = command_line_arguments.model
+        dataset_id = command_line_arguments.dataset
         learning_rate, batch_size, number_of_epochs = hyperparameters.get_defaults(
-            command_line_arguments.model,
-            command_line_arguments.dataset,
+            model_id,
+            dataset_id,
             command_line_arguments.learning_rate,
             command_line_arguments.batch_size,
             command_line_arguments.number_of_epochs
         )
+
+        # Saves the hyperparameters for later reference
+        with open(os.path.join(command_line_arguments.output_path, 'hyperparameters.yaml'), 'w', encoding='utf-8') as hyperparameters_file:
+            yaml.dump({
+                'model_id': model_id,
+                'dataset_id': dataset_id,
+                'dataset_path': command_line_arguments.dataset_path,
+                'output_path': command_line_arguments.output_path,
+                'number_of_iterations': command_line_arguments.number_of_iterations,
+                'number_of_epochs': number_of_epochs,
+                'batch_size': batch_size,
+                'learning_rate': learning_rate
+            }, hyperparameters_file)
 
         # Checks if CUDA is available, in that case the training is performed on the first GPU on the system, otherwise the CPU is used
         device = 'cpu'
@@ -55,9 +71,7 @@ class FindTicketCommand(BaseCommand):
         self.logger.info('Selected %s to perform training...', device_name)
 
         # Loads the training and the test split of the dataset and creates the model
-        dataset_id = command_line_arguments.dataset
         dataset = create_dataset(dataset_id, command_line_arguments.dataset_path, batch_size)
-        model_id = command_line_arguments.model
         model = create_model(model_id, dataset.sample_shape[:2], dataset.sample_shape[2], dataset.number_of_classes)
 
         # Logs out the model and dataset that is being trained on
