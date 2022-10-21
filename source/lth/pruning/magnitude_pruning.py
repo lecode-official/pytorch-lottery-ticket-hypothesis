@@ -66,8 +66,12 @@ class LayerWiseMagnitudePruner:
         # Logs out a success message
         self.logger.info('Finished generating pruning mask for model %s.', self.model.name)
 
-    def apply_pruning_masks(self) -> None:
-        """Applies the pruning masks generated using create_pruning_masks. This is effectively the actual pruning."""
+    def apply_pruning_masks(self) -> float:
+        """Applies the pruning masks generated using create_pruning_masks. This is effectively the actual pruning.
+
+        Returns:
+            float: Returns the sparsity of the pruned model.
+        """
 
         # Applies the pruning masks for all layers
         total_number_of_weights = 0
@@ -82,9 +86,11 @@ class LayerWiseMagnitudePruner:
             number_of_zero_weights += pruned_weights.numel() - pruned_weights.nonzero().size(0)
             self.model.update_layer_weights(layer.name, pruned_weights)
         self.logger.info('Finished applying the pruning masks to the layers of the model.')
+        sparsity = number_of_zero_weights / total_number_of_weights * 100
         self.logger.info(
             '%d of %d weights were pruned, sparsity of the model: %1.2f%%.',
             number_of_pruned_weights,
             total_number_of_weights,
-            number_of_zero_weights / total_number_of_weights * 100
+            sparsity
         )
+        return sparsity

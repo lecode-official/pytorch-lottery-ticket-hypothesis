@@ -32,8 +32,12 @@ class Evaluator:
         # Makes sure that the model is on the specified device
         self.model.to(self.device)
 
-    def evaluate(self) -> None:
-        """Evaluates the model."""
+    def evaluate(self) -> float:
+        """Evaluates the model.
+
+        Returns:
+            float: Returns the accuracy of the model.
+        """
 
         # Since we are only evaluating the model, the gradient does not have to be computed
         with torch.no_grad():
@@ -61,3 +65,4 @@ class Evaluator:
             accuracy = 100 * correct_predictions / number_of_predictions
             self.logger.info('Accuracy: %1.2f%%.', round(accuracy, 2))
             self.logger.info('Finished evaluating the model.')
+            return accuracy
