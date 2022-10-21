@@ -148,16 +148,3 @@ If you use this software in your research, please cite it like this or use the "
 <a id="7">**[7]**</a> Karen Simonyan and Andrew Zisserman. "Very Deep Convolutional Networks for Large-Scale Image Recognition". In: arXiv e-prints (Sept. 2014). arXiv: 1409.1556 [cs.CV].
 
 <a id="8">**[8]**</a> Hattie Zhou, Janice Lan, Rosanne Liu, and Jason Yosinski. "Deconstructing Lottery Tickets: Zeros, Signs, and the Supermask". In: Advances in Neural Information Processing Systems. Ed. by H. Wallach, H. Larochelle, A. Beygelzimer, F. d’Alch ́e-Buc, E. Fox, and R. Garnett. Vol. 32. Curran Associates, Inc., 2019. url: https://proceedings.neurips.cc/paper/2019/file/113d7a76ffceca1bb350bfe145467c6-Paper.pdf.
-
-## To-Do's
-
-1. Intelligently retain model checkpoint files
-2. Extensively log hyperparameters and training statistics
-3. Add support for plotting training statistics
-4. Make it possible to gracefully abort the training process
-5. Add support for macOS on ARM64
-6. Implement the ResNet-18 model
-7. Perform extensive experiments on all supported models and datasets and record the results in the read me
-8. Make it possible to redo all of the experiments from the original paper
-9. Add support for different mask-0 and mask-1 actions
-10. Make Dropout optional
