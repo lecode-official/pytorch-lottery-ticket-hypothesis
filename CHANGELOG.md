@@ -5,6 +5,7 @@
 *Unreleased*
 
 - The trained models and their pruning masks are now saved to disk after each iteration of the iterative magnitude pruning algorithm
+- The hyperparameters of the experiment and the training statistics are now logged to disk for later reference
 
 ## v0.1.0
 
