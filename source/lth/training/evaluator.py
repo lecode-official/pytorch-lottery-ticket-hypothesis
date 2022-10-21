@@ -5,6 +5,7 @@ from typing import Union
 
 import tqdm
 import torch
+import torchmetrics
 
 from lth.datasets import BaseDataset
 
@@ -30,7 +31,10 @@ class Evaluator:
         self.logger = logging.getLogger(__name__ + '.' + self.__class__.__name__)
 
         # Makes sure that the model is on the specified device
-        self.model.to(self.device)
+        self.model.move_to_device(self.device)
+
+        # Creates the loss function
+        self.loss_function = torch.nn.CrossEntropyLoss().to(self.device)
 
     def evaluate(self) -> float:
         """Evaluates the model.
@@ -46,23 +50,30 @@ class Evaluator:
             # training and evaluation)
             self.model.eval()
 
+            # Initializes the loss and accuracy metrics
+            mean_loss = torchmetrics.MeanMetric().to(self.device)
+            accuracy = torchmetrics.Accuracy().to(self.device)
+
             # Cycles through the whole test split of the dataset and performs the evaluation
             self.logger.info('Evaluating the model...')
-            correct_predictions = 0
-            number_of_predictions = 0
-            for batch in tqdm.tqdm(self.dataset.test_split, unit='batch'):
-                inputs, labels = batch
+            for inputs, targets in tqdm.tqdm(self.dataset.test_split, unit='batch'):
+
+                # Moves the inputs and the targets to the selected device
                 inputs = inputs.to(self.device, non_blocking=True)
-                labels = labels.to(self.device, non_blocking=True)
-                outputs = self.model(inputs)
-                _, predicted_classes = torch.max(outputs, 1)  # pylint: disable=no-member
-                correctness = (predicted_classes == labels).squeeze()
-                for is_correct in correctness:
-                    correct_predictions += is_correct.item()
-                    number_of_predictions += 1
+                targets = targets.to(self.device, non_blocking=True)
+
+                # Performs a forward pass through the neural network
+                predictions = self.model(inputs)
+                loss = self.loss_function(predictions, targets)  # pylint: disable=not-callable
+
+                # Updates the training metrics
+                mean_loss.update(loss)
+                accuracy.update(predictions, targets)
 
             # Computes the accuracy and reports it to the user
-            accuracy = 100 * correct_predictions / number_of_predictions
-            self.logger.info('Accuracy: %1.2f%%.', round(accuracy, 2))
-            self.logger.info('Finished evaluating the model.')
-            return accuracy
+            mean_loss = mean_loss.compute().cpu().numpy().item()
+            accuracy = accuracy.compute().cpu().numpy().item()
+            self.logger.info('Finished validation, validation loss %1.4f, validation accuracy: %1.2f%%', mean_loss, accuracy * 100)
+
+            # Returns the validation loss and validation accuracy
+            return mean_loss, accuracy

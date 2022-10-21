@@ -74,6 +74,7 @@
         "strftime",
         "Supermask",
         "Tian",
+        "torchmetrics",
         "tqdm",
         "uint",
         "Vinod",

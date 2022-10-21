@@ -5,6 +5,7 @@ from typing import Union
 
 import tqdm
 import torch
+import torchmetrics
 
 from lth.datasets import BaseDataset
 
@@ -45,11 +46,14 @@ class Trainer:
         # Creates the optimizer for the training
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
-    def train(self, number_of_epochs: int) -> None:
+    def train(self, number_of_epochs: int) -> tuple[float, float]:
         """Starts the training of the neural network.
 
         Args:
             number_of_epochs (int): The number of epochs for which the model is to be trained.
+
+        Returns:
+            tuple[float, float]: Returns a tuple containing the training loss and the training accuracy.
         """
 
         # Puts the model in training mode (this is important for some layers, like dropout and BatchNorm which have different behavior during training
@@ -57,11 +61,16 @@ class Trainer:
         self.model.train()
 
         # Trains the neural network for multiple epochs
+        mean_loss = None
+        accuracy = None
         self.logger.info('Starting training...')
         for epoch in range(number_of_epochs):
 
+            # Initializes the loss and accuracy metrics
+            mean_loss = torchmetrics.MeanMetric().to(self.device)
+            accuracy = torchmetrics.Accuracy().to(self.device)
+
             # Cycles through all batches in the dataset and trains the neural network
-            cumulative_loss = 0
             for inputs, targets in tqdm.tqdm(self.dataset.training_split, desc=f'Epoch {epoch + 1}', unit='batch'):
 
                 # Resets the gradients of the optimizer
@@ -75,17 +84,24 @@ class Trainer:
                 predictions = self.model(inputs)
                 loss = self.loss_function(predictions, targets)  # pylint: disable=not-callable
 
+                # Updates the training metrics
+                mean_loss.update(loss)
+                accuracy.update(predictions, targets)
+
                 # Computes the gradients and applies the pruning mask to it, this makes sure that all pruned weights are frozen and do not get updated
                 loss.backward()
                 for layer_name in self.model.get_layer_names():
                     layer = self.model.get_layer(layer_name)
                     layer.weights.grad *= layer.pruning_mask
                 self.optimizer.step()
-                cumulative_loss += loss.item()
 
-            # Reports the average loss for the epoch
-            loss = cumulative_loss / len(self.dataset.training_split)
-            self.logger.info('Finished Epoch %d, average loss %f.', epoch + 1, round(loss, 4))
+            # Computes the training loss and training accuracy, and reports the to the user
+            mean_loss = mean_loss.compute().cpu().numpy().item()
+            accuracy = accuracy.compute().cpu().numpy().item()
+            self.logger.info('Finished Epoch %d, training loss %1.4f, training accuracy: %1.2f%%', epoch + 1, mean_loss, accuracy * 100)
 
         # Reports that the training has finished
         self.logger.info('Finished the training.')
+
+        # Returns the final training loss and training accuracy
+        return mean_loss, accuracy

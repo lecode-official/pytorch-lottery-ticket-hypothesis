@@ -1,6 +1,7 @@
 """Contains the find-ticket command."""
 
 import os
+import csv
 import copy
 import logging
 from datetime import datetime
@@ -49,6 +50,19 @@ class FindTicketCommand(BaseCommand):
             command_line_arguments.number_of_epochs
         )
 
+        # Prepares the training statistics CSV file by writing the header to file
+        with open(os.path.join(command_line_arguments.output_path, 'training-statistics.csv'), 'w', encoding='utf-8') as training_statistics_file:
+            csv_writer = csv.writer(training_statistics_file)
+            csv_writer.writerow([
+                'timestamp',
+                'iteration',
+                'training_loss',
+                'training_accuracy',
+                'validation_loss',
+                'validation_accuracy',
+                'sparsity'
+            ])
+
         # Saves the hyperparameters for later reference
         with open(os.path.join(command_line_arguments.output_path, 'hyperparameters.yaml'), 'w', encoding='utf-8') as hyperparameters_file:
             yaml.dump({
@@ -96,8 +110,8 @@ class FindTicketCommand(BaseCommand):
             # Trains and evaluates the model
             self.logger.info('Starting iteration %d...', iteration)
             trainer = Trainer(device, model, dataset, learning_rate)
-            trainer.train(number_of_epochs)
-            accuracy = evaluator.evaluate()
+            training_loss, training_accuracy = trainer.train(number_of_epochs)
+            validation_loss, validation_accuracy = evaluator.evaluate()
 
             # Creates a new pruning mask
             pruner.create_pruning_masks()
@@ -109,11 +123,17 @@ class FindTicketCommand(BaseCommand):
             model.reset()
             sparsity = pruner.apply_pruning_masks()
 
+            # Writes the training statistics into a CSV file
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            with open(os.path.join(command_line_arguments.output_path, 'training-statistics.csv'), 'a', encoding='utf-8') as training_statistics_file:
+                csv_writer = csv.writer(training_statistics_file)
+                csv_writer.writerow([timestamp, iteration, training_loss, training_accuracy, validation_loss, validation_accuracy, sparsity])
+
             # Saves the trained model, the lottery ticket, the pruning mask, and the original initialization to disk
             current_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
             output_file_path = os.path.join(
                 command_line_arguments.output_path,
-                f'{current_date_time}-{model_id}-{dataset_id}-{iteration}-iteration-{sparsity:.2f}-sparsity-{accuracy:.2f}-accuracy.pt'
+                f'{current_date_time}-{model_id}-{dataset_id}-{iteration}-iteration-{sparsity:.2f}-sparsity-{validation_accuracy:.2f}-accuracy.pt'
             )
             original_initialization = {}
             pruning_mask = {}
