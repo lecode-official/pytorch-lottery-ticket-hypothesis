@@ -57,6 +57,11 @@ class FindTicketCommandDescriptor(BaseCommandDescriptor):
             help='The path to the dataset. If it does not exist it is automatically downloaded and stored at the specified location.'
         )
         argument_parser.add_argument(
+            'output_path',
+            type=str,
+            help='The path to the directory into which the results of the iterative magnitude pruning algorithm are saved.'
+        )
+        argument_parser.add_argument(
             '-i',
             '--number-of-iterations',
             dest='number_of_iterations',
